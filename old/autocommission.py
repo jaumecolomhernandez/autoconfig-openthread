@@ -39,6 +39,7 @@ def read_answer(serial_d, back=False, ending_ar=None, timeout=None):
             return
 
         counter = counter + 1
+        
     if back:
         return ret
 
