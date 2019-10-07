@@ -93,7 +93,13 @@ class DeviceManager(object):
             device.send_command(command)
     
     def authenticate(self, commissioner, joiner):
-        """ Authenticates a joiner device in the commissioner network """
+        """ Authenticates a joiner device in the commissioner network 
+            Params:
+            - commissioner: Device object
+            -
+            Returns:
+            - 
+        """
 
         # TODO: Further comment the function
         

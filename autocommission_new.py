@@ -6,8 +6,8 @@ if __name__ == "__main__":
     PAEManager = DeviceManager()
 
     # Get devices(boards) in the system
-    ## devices = PAEManager.get_USBDevices()
-    devices = PAEManager.get_StubDevices(8)
+    devices = PAEManager.get_USBDevices()
+    ## devices = PAEManager.get_StubDevices(8)
     ## devices = PAEManager.get_HTTPDevices()
 
     PAEManager.devices = devices
@@ -18,14 +18,14 @@ if __name__ == "__main__":
     # the first one
     
     # Factory reset the boards
-    # [PAEManager.reset_device(dev) for dev in devices]
+    # [PAEManager.reset_device(dev) for dev in PAEManager.devices]
     for dev in PAEManager.devices:
         PAEManager.reset_device(dev)
 
     # Create network
     commissioner = PAEManager.devices[0]
     PAEManager.initialize_commissioner(commissioner)
-
+    
     # Connect all the other devices to the commisioner
     for dev in PAEManager.devices[1:]:
         PAEManager.authenticate(commissioner, dev)
