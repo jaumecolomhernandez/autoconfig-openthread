@@ -1,4 +1,5 @@
 import os
+import re
 import serial
 import time
 import device_classes as d
@@ -25,8 +26,8 @@ class DeviceManager(object):
         # print (result) # debug line
 
         # Keep the last number of every line.
-        # TODO: Improve this to save double digit numbers.
-        values = [line[-1] for line in result.splitlines()]
+        values = [re.findall(r'[0-9]+$',line)[0] for line in result.splitlines()]
+        
         return values
 
     @classmethod
