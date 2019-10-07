@@ -52,7 +52,7 @@ class USBDevice(Device):
             - 
         """
 
-        # Initial variabless
+        # Initial variables
         ret = []  # Contains the response in case needed to return the data
         counter = 0  # Counts the number of timeouts (used if timeout flag is 1)
 
