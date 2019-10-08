@@ -12,12 +12,10 @@ if __name__ == "__main__":
 
     PAEManager.devices = devices
 
-    # Set topology
-    # TODO: Implement topology setting with a graph library or handmade graph ?
-    # Currently implementing a all to 1 structure, connecting all the boards to
-    # the first one
-    top = PAEManager.all_to_one()
+    # TODO: Decouple configuration from the code. Create YAML file with all the configs
 
+    # Set topology
+    top = PAEManager.all_to_one()
     PAEManager.topology = top
 
     # PAEManager.plot(top)
