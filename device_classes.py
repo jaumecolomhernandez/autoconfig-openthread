@@ -5,7 +5,7 @@ from os import system
 class Device(ABC):
     """ Abstract class for the Device object. It exposes a common interface 
     for being used by the main program. It is further implemented
-    by the USBDevice, HTTPDevice and StubDevice. """
+    by the USBDevice, HTTPDevice and MockDevice. """
 
     # TODO: Complete the method docstrings
 
@@ -103,7 +103,7 @@ class HTTPDevice(Device):
         pass
 
 
-class STUBDevice(Device):
+class MockDevice(Device):
     """ Implementation of the Device class for development purposes. """
 
     def __init__(self, id, name, obj):

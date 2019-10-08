@@ -7,7 +7,7 @@ if __name__ == "__main__":
 
     # Get devices(boards) in the system
     devices = PAEManager.get_USBDevices()
-    ## devices = PAEManager.get_StubDevices(8)
+    ## devices = PAEManager.get_MockDevices(8)
     ## devices = PAEManager.get_HTTPDevices()
 
     PAEManager.devices = devices

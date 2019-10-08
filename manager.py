@@ -53,16 +53,16 @@ class DeviceManager(object):
         return devices
 
     @staticmethod
-    def get_StubDevices(number):
-        """ Returns a list with n StubDevices """
+    def get_MockDevices(number):
+        """ Returns a list with n MockDevices """
         # Instantiate list
         devices = list()
 
         # For every number
         for i in range(number):
-            new_dev = d.STUBDevice(
+            new_dev = d.MockDevice(
                 i,
-                "Stub"+str(i),
+                "Mock"+str(i),
                 None
             )
             devices.append(new_dev)
