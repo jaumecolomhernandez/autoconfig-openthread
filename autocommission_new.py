@@ -6,8 +6,8 @@ if __name__ == "__main__":
     PAEManager = DeviceManager()
 
     # Get devices(boards) in the system
-    devices = PAEManager.get_USBDevices()
-    ## devices = PAEManager.get_MockDevices(8)
+    ## devices = PAEManager.get_USBDevices()
+    devices = PAEManager.get_MockDevices(8)
     ## devices = PAEManager.get_HTTPDevices()
 
     PAEManager.devices = devices
@@ -16,22 +16,24 @@ if __name__ == "__main__":
     # TODO: Implement topology setting with a graph library or handmade graph ?
     # Currently implementing a all to 1 structure, connecting all the boards to
     # the first one
+    top = PAEManager.all_to_one()
+
+    PAEManager.topology = top
+
+    # PAEManager.plot(top)
     
     # Factory reset the boards
     # [PAEManager.reset_device(dev) for dev in PAEManager.devices]
     for dev in PAEManager.devices:
         PAEManager.reset_device(dev)
 
-    # Create network
-    commissioner = PAEManager.devices[0]
-    PAEManager.initialize_commissioner(commissioner)
+    PAEManager.plot_graph()
     
-    # Connect all the other devices to the commisioner
-    for dev in PAEManager.devices[1:]:
-        PAEManager.authenticate(commissioner, dev)
+    # Create network
+    PAEManager.apply_topology()
     
     # Open UDP and connect all the boards
-    ip = PAEManager.open_udp_communication(commissioner)
+    ip = PAEManager.open_udp_communication(PAEManager.devices[0])
     for dev in PAEManager.devices[1:]:
         PAEManager.udp_connect(ip, dev)
 

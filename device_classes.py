@@ -15,6 +15,7 @@ class Device(ABC):
         self.id = id
         self.name = name
         self.obj = obj
+        self.isCommissioner = False
 
     @abstractmethod
     def send_command(self):
