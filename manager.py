@@ -241,32 +241,43 @@ and call the method again"
 
     
     def plot_graph(self):
-        """ """
-        # Necessary imports
-        import networkx as nx
-        import matplotlib.pyplot as plt
-        
-        plt.rcParams['interactive'] == True
+    """ Plots the topology 
+        It generates an image with the networkx library, stores it
+        and opens the image.
+    """
 
-        i = 1
+    # Necessary imports
+    import networkx as nx
+    import matplotlib.pyplot as plt
 
-        lines = []
-        for key,values in self.topology.items():
-            intermed = ", ".join([str(j+1) for j in values])
-            lines.append(f'{i} {intermed}')
-            i = i+1
+    # Vars
+    lines = []
+    
+    # networkx needs a list with the following structure:
+    # ['1 connected nodes', '2 connected nodes', ... ]
+    # It has a string for every node containing the chronological order
+    # the connections it has.
+    # Example all to one structure:
+    # ['1 3', '2 3', '3 ']
+    # In this example the first two nodes are connected to the 
+    # third node. Note that the index starts at one
+    for key,values in self.topology.items():
+        # Generate the connections string
+        intermed = ", ".join([str(j+1) for j in values])
+        lines.append(f'{key+1} {intermed}')    
+    
+    # Create networkx Graph from the adjacency list
+    G = nx.parse_adjlist(lines, nodetype = int)
+    
+    # Get a dict with the labels of every node
+    labels = dict((n, self.devices[n-1].name) for n in G.nodes())
+    
+    # networkx call to generate the image
+    nx.draw(G, with_labels=True, font_weight='bold', node_color="powderblue", labels=labels)
+    
+    # Export image and open with eog
+    plt.savefig('foo.png')
+    os.system("eog foo.png &")
 
-        devs = self.devices
-
-        G = nx.parse_adjlist(lines, nodetype = int)
-        labels = dict((n, devs[n-1].name) for n in G.nodes())
-
-        nx.draw(G, with_labels=True, font_weight='bold', node_color="powderblue", labels=labels)
-        #plt.show(block=False)
-        plt.savefig('foo.png')
-        os.system("eog foo.png &")
-
-        print(lines)
-
-        pass
+    
 

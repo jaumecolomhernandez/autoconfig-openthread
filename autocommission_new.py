@@ -6,9 +6,9 @@ if __name__ == "__main__":
     PAEManager = DeviceManager()
 
     # Get devices(boards) in the system
-    ## devices = PAEManager.get_USBDevices()
-    devices = PAEManager.get_MockDevices(8)
-    ## devices = PAEManager.get_HTTPDevices()
+    # devices = PAEManager.get_USBDevices()
+    devices = PAEManager.get_MockDevices(18)
+    # devices = PAEManager.get_HTTPDevices()
 
     PAEManager.devices = devices
 
@@ -19,9 +19,8 @@ if __name__ == "__main__":
     PAEManager.topology = top
 
     # PAEManager.plot(top)
-    
+
     # Factory reset the boards
-    # [PAEManager.reset_device(dev) for dev in PAEManager.devices]
     for dev in PAEManager.devices:
         PAEManager.reset_device(dev)
 
@@ -40,5 +39,3 @@ if __name__ == "__main__":
         device.terminal()
 
     # TODO: Implement terminal for the program (cmd, ncurses or miniterm.py (from pyserial)) 
-   
-
