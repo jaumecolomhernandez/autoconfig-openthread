@@ -8,9 +8,10 @@ import device_classes as d
 class DeviceManager(object):
     """ """
 
-    def __init__(self):
+    def __init__(self, config):
         self.devices = list()
         self.topology = None
+        self.commissioner_id = config['device']['commissioner_device_id']    
 
     @staticmethod
     def get_tty():
@@ -190,12 +191,12 @@ class DeviceManager(object):
             return
 
         # It is better to use the ids as they are integers and provide a
-        # way to decouple the data structures (by means of a join)
-        ids = [ device.id for device in self.devices ]
+        # way to decouple the data structures (by means of a join). We exclude 
+        # the commissioner from the list of ids.
+        ids = [ device.id for device in self.devices if device.id != self.commissioner_id]
 
-        # The last element will be the commissioner, so it gets deleted
-        # from the list and saved in a variable as it will be used later
-        commissioner_id = ids.pop()
+        # The commissioner is a defined id in the Yaml configuration
+        commissioner_id = self.commissioner_id
 
         # Create adjacency list with all the current devices connectating
         # to the commissioner
@@ -241,43 +242,43 @@ and call the method again"
 
     
     def plot_graph(self):
-    """ Plots the topology 
-        It generates an image with the networkx library, stores it
-        and opens the image.
-    """
+        """ Plots the topology 
+            It generates an image with the networkx library, stores it
+            and opens the image.
+        """
 
-    # Necessary imports
-    import networkx as nx
-    import matplotlib.pyplot as plt
+        # Necessary imports
+        import networkx as nx
+        import matplotlib.pyplot as plt
 
-    # Vars
-    lines = []
-    
-    # networkx needs a list with the following structure:
-    # ['1 connected nodes', '2 connected nodes', ... ]
-    # It has a string for every node containing the chronological order
-    # the connections it has.
-    # Example all to one structure:
-    # ['1 3', '2 3', '3 ']
-    # In this example the first two nodes are connected to the 
-    # third node. Note that the index starts at one
-    for key,values in self.topology.items():
-        # Generate the connections string
-        intermed = ", ".join([str(j+1) for j in values])
-        lines.append(f'{key+1} {intermed}')    
-    
-    # Create networkx Graph from the adjacency list
-    G = nx.parse_adjlist(lines, nodetype = int)
-    
-    # Get a dict with the labels of every node
-    labels = dict((n, self.devices[n-1].name) for n in G.nodes())
-    
-    # networkx call to generate the image
-    nx.draw(G, with_labels=True, font_weight='bold', node_color="powderblue", labels=labels)
-    
-    # Export image and open with eog
-    plt.savefig('foo.png')
-    os.system("eog foo.png &")
+        # Vars
+        lines = []
+        
+        # networkx needs a list with the following structure:
+        # ['1 connected nodes', '2 connected nodes', ... ]
+        # It has a string for every node containing the chronological order
+        # the connections it has.
+        # Example all to one structure:
+        # ['1 3', '2 3', '3 ']
+        # In this example the first two nodes are connected to the 
+        # third node. Note that the index starts at one
+        for key,values in self.topology.items():
+            # Generate the connections string
+            intermed = ", ".join([str(j+1) for j in values])
+            lines.append(f'{key+1} {intermed}')    
+        
+        # Create networkx Graph from the adjacency list
+        G = nx.parse_adjlist(lines, nodetype = int)
+        
+        # Get a dict with the labels of every node
+        labels = dict((n, self.devices[n-1].name) for n in G.nodes())
+        
+        # networkx call to generate the image
+        nx.draw(G, with_labels=True, font_weight='bold', node_color="powderblue", labels=labels)
+        
+        # Export image and open with eog
+        plt.savefig('foo.png')
+        os.system("eog foo.png &")
 
     
 
