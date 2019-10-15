@@ -8,7 +8,7 @@ launches terminals to every board.
 ### Vision for the project
 The goal is to have control over the full network via the 5G network, everything managed by a cloud server.
 
-![schematic](./docs/schematic.png "schematic image")
+<img src="./docs/schematic.png" width="600">
 
 ### How to use
 Configure the program using the config.yaml file. Code snippet:
