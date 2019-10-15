@@ -1,5 +1,5 @@
 *.pyc
 /.ipynb_checkpoints
 /.vscode
-*.png
+foo.png
 commissioning-tests.ipynb
