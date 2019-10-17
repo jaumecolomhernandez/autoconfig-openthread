@@ -265,13 +265,13 @@ and call the method again"
         for key,values in self.topology.items():
             # Generate the connections string
             intermed = ", ".join([str(j+1) for j in values])
-            lines.append(f'{key+1} {intermed}')    
+            lines.append(f'{key+1} {intermed}')
         
         # Create networkx Graph from the adjacency list
         G = nx.parse_adjlist(lines, nodetype = int)
         
         # Get a dict with the labels of every node
-        labels = dict((n, self.devices[n-1].name) for n in G.nodes())
+        labels = dict((n, self.self.getDevice(n-1).name) for n in G.nodes())
         
         # networkx call to generate the image
         nx.draw(G, with_labels=True, font_weight='bold', node_color="powderblue", labels=labels)

@@ -2,13 +2,13 @@
 
 # Device related configs
 device: 
-  device_type: 'Mock'         # Options are: 'USB', 'Mock' and 'HTTP' (although not implemented)
+  device_type: 'USB'         # Options are: 'USB', 'Mock' and 'HTTP' (although not implemented)
   mock_config:  
     number: 15                # Number of devices to create
   tty_config:
   http_config:
-  commissioner_device_id: 7   # Id of the device to be the commissioner and to receive the udp messages
-  udp_receiver_id: 0
+  commissioner_device_id: 3   # Id of the device to be the commissioner and to receive the udp messages
+  udp_receiver_id: 3
 # Topology related configs
 topology:
   topology_type: 'all_to_one' # Currently only implemented 'all_to_one'
