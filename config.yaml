@@ -2,7 +2,7 @@
 
 # Device related configs
 device: 
-  device_type: 'USB'         # Options are: 'USB', 'Mock' and 'HTTP' (although not implemented)
+  device_type: 'Mock'         # Options are: 'USB', 'Mock' and 'HTTP' (although not implemented)
   mock_config:  
     number: 15                # Number of devices to create
   tty_config:

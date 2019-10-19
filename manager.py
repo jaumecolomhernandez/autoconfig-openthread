@@ -248,6 +248,7 @@ and call the method again"
         """
 
         # Necessary imports
+        from operator import itemgetter
         import networkx as nx
         import matplotlib.pyplot as plt
 
@@ -271,10 +272,25 @@ and call the method again"
         G = nx.parse_adjlist(lines, nodetype = int)
         
         # Get a dict with the labels of every node
-        labels = dict((n, self.self.getDevice(n-1).name) for n in G.nodes())
+        labels = dict((n, self.getDevice(n-1).name) for n in G.nodes())
+        
+        # Find node with largest degree
+        node_and_degree = G.degree()
+        (largest_hub, degree) = sorted(node_and_degree, key=itemgetter(1))[-1]
+        
+        # Create ego graph of main hub
+        hub_ego = nx.ego_graph(G, largest_hub)
+        
+        # larger figure size
+        plt.figure(3,figsize=(12,12))
+        
+        # Draw graph
+        pos = nx.spring_layout(hub_ego)
+        nx.draw(hub_ego, pos, node_color='b', node_size=5000, with_labels=True, font_weight='bold', labels=labels)
+         
         
         # networkx call to generate the image
-        nx.draw(G, with_labels=True, font_weight='bold', node_color="powderblue", labels=labels)
+        nx.draw(hub_ego, pos, with_labels=True, font_weight='bold',nodelist=[largest_hub], node_size=5000, node_color='g', labels=labels)
         
         # Export image and open with eog
         plt.savefig('foo.png')

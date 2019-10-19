@@ -20,7 +20,7 @@ if __name__ == "__main__":
         devices = PAEManager.get_MockDevices(dc['mock_config']['number'])
 
     elif dc['device_type'] == 'HTTP':
-        print('Device not yes implemented')
+        print('Device not yet implemented')
         exit()
     else:
         print('Device type does not exist')
