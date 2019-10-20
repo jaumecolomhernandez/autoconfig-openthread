@@ -3,6 +3,7 @@ import re
 import serial
 import time
 import device_classes as d
+import threading
 
 
 class DeviceManager(object):
@@ -211,7 +212,7 @@ class DeviceManager(object):
         """ Applies the topology set in self.topology to the boards connected """
 
         # TODO: Implement manner to check if the nodes are already connected
-
+        
         # Check that there's a topology set
         if not self.topology:
             print(
@@ -219,7 +220,10 @@ class DeviceManager(object):
 and call the method again"
             )
             return
-
+        
+        # A list of all the threads joining the network
+        joiners=list()
+        
         # Iterate through all the items in the adjacency dictionary, take
         # into account that the values are the Device id, so to act on them
         # it is needed to get the Device object
@@ -236,8 +240,12 @@ and call the method again"
                     self.initialize_commissioner(commissioner)
 
                 # Authenticate both devices
-                self.authenticate(commissioner, joiner)
-
+                joiners.append(threading.Thread(target=self.authenticate, args=(commissioner, joiner)))
+                joiners[-1].start()
+                # self.authenticate(commissioner, joiner)
+        
+        # Wait for all the nodes to join the network
+        [joiner.join() for joiner in joiners]
         print("All devices connected")
 
     

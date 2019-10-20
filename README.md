@@ -52,7 +52,7 @@ Conda instructions:
 
 1- Install conda environment
 ```
-conda env create -f environment.yml
+conda env create -f environment.yaml
 ```
 2- Activate environment
 ```
