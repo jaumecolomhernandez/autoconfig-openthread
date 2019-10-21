@@ -64,6 +64,8 @@ class USBDevice(Device):
         # Iterate until we read the desired response
         while not (data in endings):
             # Read line from the serial port
+            
+            # TODO: Catch exception when error in decoding the line
             data = self.obj.readline().decode("ascii")
 
             # Store data if needed (back flag)
