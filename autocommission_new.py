@@ -18,7 +18,7 @@ if __name__ == "__main__":
         devices = PAEManager.get_USBDevices()
 
     elif dc['device_type'] == 'Mock':
-        devices = PAEManager.get_MockDevices(dc['mock_config']['number'])
+        devices = PAEManager.get_MockDevices(dc['mock_config']['number'],dc['commissioner_device_id'])
 
     elif dc['device_type'] == 'HTTP':
         print('Device not yet implemented')

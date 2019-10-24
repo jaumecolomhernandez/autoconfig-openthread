@@ -54,7 +54,7 @@ class DeviceManager(object):
         return devices
 
     @staticmethod
-    def get_MockDevices(number):
+    def get_MockDevices(number, commissioner_device_id):
         """ Returns a list with n MockDevices """
         # Instantiate list
         devices = list()
@@ -64,6 +64,9 @@ class DeviceManager(object):
             new_dev = d.MockDevice(i, "Mock" + str(i), None)
             devices.append(new_dev)
 
+        # Tags the commissioner device
+        devices[commissioner_device_id].isCommissioner=True
+        
         return devices
 
     @staticmethod
@@ -282,6 +285,14 @@ and call the method again"
         # Get a dict with the labels of every node
         labels = dict((n, self.getDevice(n-1).name) for n in G.nodes())
         
+        # Asign a colour to each node
+        colours=[]
+        for n in G.nodes():
+            if self.getDevice(n-1).isCommissioner:
+                colours.insert(n,'b')
+            if not self.getDevice(n-1).isCommissioner:
+                colours.insert(n,'g')
+        
         # Find node with largest degree
         node_and_degree = G.degree()
         (largest_hub, degree) = sorted(node_and_degree, key=itemgetter(1))[-1]
@@ -294,11 +305,11 @@ and call the method again"
         
         # Draw graph
         pos = nx.spring_layout(hub_ego)
-        nx.draw(hub_ego, pos, node_color='b', node_size=5000, with_labels=True, font_weight='bold', labels=labels)
+        nx.draw(hub_ego, pos, node_color=colours, node_size=5000, with_labels=True, font_weight='bold', labels=labels)
          
         
         # networkx call to generate the image
-        nx.draw(hub_ego, pos, with_labels=True, font_weight='bold',nodelist=[largest_hub], node_size=5000, node_color='g', labels=labels)
+        # nx.draw(hub_ego, pos, with_labels=True, font_weight='bold',nodelist=[largest_hub], node_size=5000, node_color='g', labels=labels)
         
         # Export image and open with eog
         plt.savefig('foo.png')
