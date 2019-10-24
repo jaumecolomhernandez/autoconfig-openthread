@@ -47,14 +47,19 @@ if __name__ == "__main__":
     PAEManager.apply_topology()
     
     # Open UDP and connect all the boards
-    openingudps=list()
-    ip = PAEManager.open_udp_communication(PAEManager.devices[0])
-    for dev in PAEManager.devices[1:]:
-        openingudps.append(threading.Thread(target=PAEManager.udp_connect, args=(ip, dev)))
-        openingudps[-1].start()
+    if config['threading']:
+        openingudps=list()
+        ip = PAEManager.open_udp_communication(PAEManager.devices[0])
+        for dev in PAEManager.devices[1:]:
+            openingudps.append(threading.Thread(target=PAEManager.udp_connect, args=(ip, dev)))
+            openingudps[-1].start()
 
-    # Wait for all the boards to open the udp port
-    [openedudp.join() for openedudp in openingudps]
+        # Wait for all the boards to open the udp port
+        [openedudp.join() for openedudp in openingudps]
+    else:
+        ip = PAEManager.open_udp_communication(PAEManager.devices[0])
+        for dev in PAEManager.devices[1:]:
+            PAEManager.udp_connect(ip, dev)
     
     if config['open_terms']:   # See config.yaml    
         # Open terminal for each device   
