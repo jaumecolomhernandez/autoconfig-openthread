@@ -4,6 +4,8 @@ import serial
 import time
 import device_classes as d
 import threading
+import logging
+import logger
 
 
 class DeviceManager(object):
@@ -12,7 +14,8 @@ class DeviceManager(object):
     def __init__(self, config):
         self.devices = list()
         self.topology = None
-        self.commissioner_id = config['device']['commissioner_device_id']    
+        self.commissioner_id = config['device']['commissioner_device_id']
+        self.logger = logging.getLogger(__name__)    
 
     @staticmethod
     def get_tty():
@@ -89,7 +92,6 @@ class DeviceManager(object):
             "thread start",
             "ipaddr",
         ]
-
         # Call every command
         for command in init_commands:
             device.send_command(command)
@@ -106,7 +108,7 @@ class DeviceManager(object):
         """
 
         if not commissioner.isCommissioner:
-            print("ERROR: {commissioner} is no a Commissioner")
+            self.logger.error('{commissioner.name} is not a Commissioner')
 
         # TODO: Further comment the function
 
@@ -132,11 +134,12 @@ class DeviceManager(object):
         joiner.read_answer()
 
         # TODO Implement the loggin module with two levels
-        print("Waiting for the joiner answer...")
+        self.logger.info('Waiting for the joiner answer...')
         try:
             joiner.read_answer(ending_ar=["Join success\r\n"])
         except:
-            print("Stopped by the user!")
+            self.logger.warning('Stopped by the user!')
+            # print("Stopped by the user!")
 
         joiner.send_command("ifconfig up")
         joiner.send_command("thread start")
@@ -181,7 +184,7 @@ class DeviceManager(object):
         if result:
             return result
         else:
-            print("ERROR: Device does not exist in the list! Check again")
+            self.logger.error('Device does not exist in the list! Check again')
 
     def all_to_one(self):
         """ Creates all to one topology
@@ -191,7 +194,7 @@ class DeviceManager(object):
         """
         # Length check for the topology
         if len(self.devices) < 2:
-            print("ERROR: Can't create topology if < 2 devices")
+            self.logger.error('Can not create topology if < 2 devices')
             return
 
         # It is better to use the ids as they are integers and provide a
@@ -218,10 +221,7 @@ class DeviceManager(object):
         
         # Check that there's a topology set
         if not self.topology:
-            print(
-                "ERROR: There's no topology specified! Please indicate one \
-and call the method again"
-            )
+            self.logger.error('There is no topology specified! Please indicate one and call the method again')
             return
         
         # A list of all the threads joining the network
@@ -239,7 +239,7 @@ and call the method again"
                 commissioner = self.getDevice(id=device_id)
 
                 # Check that the device is initalized to work as a commissioner
-                if not commissioner.isCommissioner:
+                if commissioner.isCommissioner:
                     self.initialize_commissioner(commissioner)
 
                 # Authenticate both devices
@@ -249,7 +249,7 @@ and call the method again"
         
         # Wait for all the nodes to join the network
         [joiner.join() for joiner in joiners]
-        print("All devices connected")
+        self.logger.info('All devices connected')
 
     
     def plot_graph(self):
@@ -306,10 +306,6 @@ and call the method again"
         # Draw graph
         pos = nx.spring_layout(hub_ego)
         nx.draw(hub_ego, pos, node_color=colours, node_size=5000, with_labels=True, font_weight='bold', labels=labels)
-         
-        
-        # networkx call to generate the image
-        # nx.draw(hub_ego, pos, with_labels=True, font_weight='bold',nodelist=[largest_hub], node_size=5000, node_color='g', labels=labels)
         
         # Export image and open with eog
         plt.savefig('foo.png')

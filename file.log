@@ -1,0 +1,28 @@
+10/25/2019 10:46:22 PM - INFO - device_classes - Mock0 - Sent command: factoryreset
+10/25/2019 10:46:22 PM - INFO - device_classes - Mock1 - Sent command: factoryreset
+10/25/2019 10:46:22 PM - INFO - device_classes - Mock1 - Sent command: dataset init new
+10/25/2019 10:46:22 PM - INFO - device_classes - Mock1 - Sent command: dataset
+10/25/2019 10:46:22 PM - INFO - device_classes - Mock1 - Sent command: dataset commit active
+10/25/2019 10:46:22 PM - INFO - device_classes - Mock1 - Sent command: panid 0xdead
+10/25/2019 10:46:22 PM - INFO - device_classes - Mock1 - Sent command: ifconfig up
+10/25/2019 10:46:22 PM - INFO - device_classes - Mock1 - Sent command: thread start
+10/25/2019 10:46:22 PM - INFO - device_classes - Mock1 - Sent command: ipaddr
+10/25/2019 10:46:22 PM - INFO - device_classes - Mock0 - Sent command: eui64
+10/25/2019 10:46:23 PM - INFO - device_classes - Mock0 - Sent command: scan
+10/25/2019 10:46:23 PM - INFO - device_classes - Mock1 - Sent command: commissioner start
+10/25/2019 10:46:23 PM - INFO - device_classes - Mock1 - Sent command: commissioner joiner add  AAAA
+10/25/2019 10:46:24 PM - INFO - device_classes - Mock0 - Sent command: ifconfig up
+10/25/2019 10:46:24 PM - INFO - device_classes - Mock0 - Sent command: panid 0xdead
+10/25/2019 10:46:24 PM - INFO - device_classes - Mock0 - Sent command: joiner start AAAA
+10/25/2019 10:46:24 PM - INFO - device_classes - Mock0 - Sent command: scan
+10/25/2019 10:46:24 PM - INFO - manager - Waiting for the joiner answer...
+10/25/2019 10:46:24 PM - INFO - device_classes - Mock0 - Sent command: ifconfig up
+10/25/2019 10:46:24 PM - INFO - device_classes - Mock0 - Sent command: thread start
+10/25/2019 10:46:24 PM - INFO - manager - All devices connected
+10/25/2019 10:46:24 PM - INFO - device_classes - Mock0 - Sent command: udp open
+10/25/2019 10:46:24 PM - INFO - device_classes - Mock0 - Sent command: udp bind :: 1212
+10/25/2019 10:46:24 PM - INFO - device_classes - Mock0 - Sent command: ipaddr
+10/25/2019 10:46:24 PM - INFO - device_classes - Mock1 - Sent command: udp open
+10/25/2019 10:46:24 PM - INFO - device_classes - Mock1 - Sent command: udp connect  1212
+10/25/2019 10:46:24 PM - INFO - device_classes - Mock0 - There's no terminal for Mock0 device.
+10/25/2019 10:46:24 PM - INFO - device_classes - Mock1 - There's no terminal for Mock1 device.

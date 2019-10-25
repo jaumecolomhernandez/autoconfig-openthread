@@ -1,6 +1,8 @@
 from manager import DeviceManager
 import yaml
 import threading
+import logging
+import logger
 
 
 if __name__ == "__main__":
@@ -9,11 +11,15 @@ if __name__ == "__main__":
     config = yaml.safe_load(file)
     config['open_terms']
 
+    # Create a logger
+    logger = logging.getLogger(__name__)
+
     # Instantiate the DeviceManager
     PAEManager = DeviceManager(config)
 
     # Get devices(boards) in the system
     dc = config['device']
+    
     if dc['device_type'] == 'USB':
         devices = PAEManager.get_USBDevices()
 
@@ -21,10 +27,10 @@ if __name__ == "__main__":
         devices = PAEManager.get_MockDevices(dc['mock_config']['number'],dc['commissioner_device_id'])
 
     elif dc['device_type'] == 'HTTP':
-        print('Device not yet implemented')
+        logger.info('Device not yet implemented')
         exit()
     else:
-        print('Device type does not exist')
+        logger.critical('Device type does not exist')
         exit()
 
     PAEManager.devices = devices

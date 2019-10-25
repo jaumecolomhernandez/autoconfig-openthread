@@ -1,6 +1,7 @@
 from abc import ABC, abstractmethod
 from os import system
-
+import logging
+import logger
 
 class Device(ABC):
     """ Abstract class for the Device object. It exposes a common interface 
@@ -16,6 +17,8 @@ class Device(ABC):
         self.name = name
         self.obj = obj
         self.isCommissioner = False
+        # Create a logger
+        self.logger = logging.getLogger(__name__)
 
     @abstractmethod
     def send_command(self):
@@ -115,7 +118,7 @@ class MockDevice(Device):
 
     def send_command(self, command, back=False, ending_ar=None, timeout=None):
         """ """
-        print(f"{self.name} - Sent command: {command}")
+        self.logger.info(f"{self.name} - Sent command: {command}")
         # TODO: complete the data structures to closely relate the real ones
         # TODO: add random delays to better simulate a real device
         if command == "eui64":
@@ -130,4 +133,4 @@ class MockDevice(Device):
 
     def terminal(self):
         """ """
-        print(f"There's no terminal for {self.name} device.")
+        self.logger.info(f"{self.name} - There's no terminal for {self.name} device.")
