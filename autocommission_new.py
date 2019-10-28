@@ -11,6 +11,9 @@ if __name__ == "__main__":
     config = yaml.safe_load(file)
     config['open_terms']
 
+    # Run logger module, to configure handlers and formats
+    logger.main()
+    
     # Create a logger
     logger = logging.getLogger(__name__)
 

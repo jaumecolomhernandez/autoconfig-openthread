@@ -5,7 +5,6 @@ import time
 import device_classes as d
 import threading
 import logging
-import logger
 
 
 class DeviceManager(object):
@@ -25,9 +24,6 @@ class DeviceManager(object):
         result = os.popen(
             'find /dev/serial/by-id/ -maxdepth 1 -type l -ls | cut -d"/" -f5- '
         ).read()
-
-        # TODO: Implementation of logging module with NORMAL and DEBUG modes
-        # print (result) # debug line
 
         # Keep the last number of every line.
         values = [re.findall(r"[0-9]+$", line)[0] for line in result.splitlines()]
@@ -133,7 +129,6 @@ class DeviceManager(object):
         joiner.send_command("scan")
         joiner.read_answer()
 
-        # TODO Implement the loggin module with two levels
         self.logger.info('Waiting for the joiner answer...')
         try:
             joiner.read_answer(ending_ar=["Join success\r\n"])
@@ -285,12 +280,13 @@ class DeviceManager(object):
         # Get a dict with the labels of every node
         labels = dict((n, self.getDevice(n-1).name) for n in G.nodes())
         
-        # Asign a colour to each node
+        # Asign a colour to each node. If is a commissioner node, blue will be assigned.
+        # If is a joiner, green will be assigned
         colours=[]
         for n in G.nodes():
             if self.getDevice(n-1).isCommissioner:
                 colours.insert(n,'b')
-            if not self.getDevice(n-1).isCommissioner:
+            else:
                 colours.insert(n,'g')
         
         # Find node with largest degree
@@ -300,7 +296,7 @@ class DeviceManager(object):
         # Create ego graph of main hub
         hub_ego = nx.ego_graph(G, largest_hub)
         
-        # larger figure size
+        # Larger figure size
         plt.figure(3,figsize=(12,12))
         
         # Draw graph

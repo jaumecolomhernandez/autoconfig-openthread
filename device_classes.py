@@ -1,7 +1,6 @@
 from abc import ABC, abstractmethod
 from os import system
 import logging
-import logger
 
 class Device(ABC):
     """ Abstract class for the Device object. It exposes a common interface 
@@ -66,13 +65,12 @@ class USBDevice(Device):
         data = ""
         # Iterate until we read the desired response
         while not (data in endings):
+        
             # Read line from the serial port
-            
-            # TODO: Catch exception when error in decoding the line
             try:
-            data = self.obj.readline().decode("ascii")
+                data = self.obj.readline().decode("ascii")
             except Exception as e:
-            logger.error(f"There has been a problem with the string decodification", exc_info=e)
+                logger.error(f"There has been a problem with the string decodification", exc_info=e)
 
 
             # Store data if needed (back flag)
