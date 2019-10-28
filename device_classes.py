@@ -69,7 +69,11 @@ class USBDevice(Device):
             # Read line from the serial port
             
             # TODO: Catch exception when error in decoding the line
+            try:
             data = self.obj.readline().decode("ascii")
+            except Exception as e:
+            logger.error(f"There has been a problem with the string decodification", exc_info=e)
+
 
             # Store data if needed (back flag)
             ret.append(data)
