@@ -46,8 +46,18 @@ if __name__ == "__main__":
 
     # TODO multithreading for reset
     # Factory reset the boards
-    for dev in PAEManager.devices:
-        PAEManager.reset_device(dev)
+    if config['threading']:
+        devices_resetting = list()
+        for dev in PAEManager.devices:
+            devices_resetting.append(threading.Thread(target=PAEManager.reset_device, args=(dev,)))
+            devices_resetting[-1].start()
+
+        # Wait for all the boards to open the udp port
+        [reseted_device.join() for reseted_device in devices_resetting]
+        
+    else:
+        for dev in PAEManager.devices:
+            PAEManager.reset_device(dev)
 
     # Print the topology
     if config['topology']['plot']:
