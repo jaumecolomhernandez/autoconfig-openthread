@@ -7,11 +7,11 @@ device:
     number: 15                # Number of devices to create
   tty_config:
   http_config:
-  commissioner_device_id: 3   # Id of the device to be the commissioner and to receive the udp messages
-  udp_receiver_id: 3
+  commissioner_device_id: 1   # Id of the device to be the commissioner and to receive the udp messages
+  udp_receiver_id: 1
 # Topology related configs
 topology:
   topology_type: 'all_to_one' # Currently only implemented 'all_to_one'
-  plot: True                 # Requires the networkX package
+  plot: False                 # Requires the networkX package
 # Terminal flag
-open_terms: True
+open_terms: False

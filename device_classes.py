@@ -64,7 +64,7 @@ class USBDevice(Device):
         # Iterate until we read the desired response
         while not (data in endings):
             # Read line from the serial port
-            data = self.obj.readline().decode("ascii")
+            data = self.obj.readline().decode("utf-8")
 
             # Store data if needed (back flag)
             ret.append(data)
