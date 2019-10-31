@@ -258,8 +258,8 @@ class DeviceManager(object):
         
         # TODO import only the used functions
         # Necessary imports
-        import networkx as nx
-        import matplotlib.pyplot as plt
+        from networkx import parse_adjlist, draw
+        from matplotlib.pyplot import figure, savefig
 
         # Vars
         lines = []
@@ -278,7 +278,7 @@ class DeviceManager(object):
             lines.append(f'{key+1} {intermed}')
         
         # Create networkx Graph from the adjacency list
-        G = nx.parse_adjlist(lines, nodetype = int)
+        G = parse_adjlist(lines, nodetype = int)
         
         # Get a dict with the labels of every node
         labels = dict((n, self.getDevice(n-1).name) for n in G.nodes())
@@ -293,12 +293,11 @@ class DeviceManager(object):
                 colours.insert(n,'g')
         
         # Larger figure size
-        plt.figure(3,figsize=(12,12))
+        figure(3,figsize=(12,12))
         
         # Draw graph
-        nx.draw(G, node_size=5000, with_labels=True, font_weight='bold', labels=labels, node_color=colours)
+        draw(G, node_size=5000, with_labels=True, font_weight='bold', labels=labels, node_color=colours)
         
-        # TODO Afegir config per nom del arxiu
         # Export image and open with eog
-        plt.savefig(self.config['topology']['file_name'])
+        savefig(self.config['topology']['file_name'])
         os.system(f"eog {self.config['topology']['file_name']} &")

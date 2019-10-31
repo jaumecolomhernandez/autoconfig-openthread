@@ -44,7 +44,6 @@ if __name__ == "__main__":
     top = PAEManager.all_to_one()
     PAEManager.topology = top
 
-    # TODO multithreading for reset
     # Factory reset the boards
     if config['threading']:
         devices_resetting = list()
