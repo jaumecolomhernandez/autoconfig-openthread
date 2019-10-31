@@ -8,7 +8,8 @@ class Device(ABC):
     by the USBDevice, HTTPDevice and MockDevice. """
 
     # TODO: Complete the method docstrings
-
+    
+    # TODO __str__
     @abstractmethod
     def __init__(self, id, name, obj):
         """"""
@@ -70,7 +71,7 @@ class USBDevice(Device):
             try:
                 data = self.obj.readline().decode("ascii")
             except Exception as e:
-                logger.error(f"There has been a problem with the string decodification", exc_info=e)
+                self.logger.error(f"There has been a problem with the string decodification", exc_info=e)
 
 
             # Store data if needed (back flag)

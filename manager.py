@@ -14,7 +14,7 @@ class DeviceManager(object):
         self.devices = list()
         self.topology = None
         self.commissioner_id = config['device']['commissioner_device_id']
-        self.logger = logging.getLogger(__name__)    
+        self.logger = logging.getLogger(__name__)  
 
     @staticmethod
     def get_tty():
@@ -252,9 +252,11 @@ class DeviceManager(object):
             It generates an image with the networkx library, stores it
             and opens the image.
         """
-
+        log = logging.getLogger('matplotlib')
+        log.setLevel(logging.ERROR)
+        
+        # TODO import only the used functions
         # Necessary imports
-        from operator import itemgetter
         import networkx as nx
         import matplotlib.pyplot as plt
 
@@ -289,23 +291,13 @@ class DeviceManager(object):
             else:
                 colours.insert(n,'g')
         
-        # Find node with largest degree
-        node_and_degree = G.degree()
-        (largest_hub, degree) = sorted(node_and_degree, key=itemgetter(1))[-1]
-        
-        # Create ego graph of main hub
-        hub_ego = nx.ego_graph(G, largest_hub)
-        
         # Larger figure size
         plt.figure(3,figsize=(12,12))
         
         # Draw graph
-        pos = nx.spring_layout(hub_ego)
-        nx.draw(hub_ego, pos, node_color=colours, node_size=5000, with_labels=True, font_weight='bold', labels=labels)
+        nx.draw(G, node_size=5000, with_labels=True, font_weight='bold', labels=labels, node_color=colours)
         
+        # TODO Afegir config per nom del arxiu
         # Export image and open with eog
         plt.savefig('foo.png')
         os.system("eog foo.png &")
-
-    
-

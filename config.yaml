@@ -12,9 +12,10 @@ device:
 # Topology related configs
 topology:
   topology_type: 'all_to_one' # Currently only implemented 'all_to_one'
-  plot: False                 # Requires the networkX package
+  plot: True                 # Requires the networkX package
 # Terminal flag
 open_terms: True
 threading: True
 logger:
   format: '%(asctime)s - %(levelname)s - %(name)s - %(message)s'
+  level: 'DEBUG'

@@ -12,7 +12,7 @@ if __name__ == "__main__":
     config['open_terms']
 
     # Run logger module, to configure handlers and formats
-    logger.main()
+    logger.init()
     
     # Create a logger
     logger = logging.getLogger(__name__)
@@ -44,6 +44,7 @@ if __name__ == "__main__":
     top = PAEManager.all_to_one()
     PAEManager.topology = top
 
+    # TODO multithreading for reset
     # Factory reset the boards
     for dev in PAEManager.devices:
         PAEManager.reset_device(dev)

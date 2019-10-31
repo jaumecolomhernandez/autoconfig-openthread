@@ -1,7 +1,7 @@
 import logging
 import yaml
 
-def main():
+def init():
 
     # Read the configuration file
     file = open("config.yaml", 'r') 
@@ -11,21 +11,17 @@ def main():
     logger = logging.getLogger()
     logger.setLevel(logging.DEBUG)
 
-    # Create handlers. One to display by console, another to writte on a file
-    c_handler = logging.StreamHandler()
-    f_handler = logging.FileHandler('file.log', mode='w')
+    # Create a handler to display by console
+    handler = logging.StreamHandler()
     
-    # Defining from which level each handler handle errors
-    c_handler.setLevel(logging.DEBUG)
-    f_handler.setLevel(logging.INFO)
+    # Defining the level of the handler, reading from the config.yalm
+    handler.setLevel(config['logger']['level'])
 
     # Read the format from de config.yalm and create a Formatter
-    format = logging.Formatter(config['logger']['format'],  datefmt='%m/%d/%Y %I:%M:%S %p')
+    format = logging.Formatter(config['logger']['format'],  datefmt='%m/%d/%Y %I:%M:%S')
     
-    # Add the Formatter to the handlers
-    c_handler.setFormatter(format)
-    f_handler.setFormatter(format)
+    # Add the Formatter to the handler
+    handler.setFormatter(format)
 
-    # Add handlers to the logger
-    logger.addHandler(c_handler)
-    logger.addHandler(f_handler)
+    # Add handler to the logger
+    logger.addHandler(handler)

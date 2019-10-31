@@ -1,50 +1,50 @@
-10/28/2019 11:55:28 AM - INFO - device_classes - Mock0 - Sent command: factoryreset
-10/28/2019 11:55:28 AM - INFO - device_classes - Mock1 - Sent command: factoryreset
-10/28/2019 11:55:28 AM - INFO - device_classes - Mock2 - Sent command: factoryreset
-10/28/2019 11:55:28 AM - INFO - device_classes - Mock1 - Sent command: dataset init new
-10/28/2019 11:55:28 AM - INFO - device_classes - Mock1 - Sent command: dataset
-10/28/2019 11:55:28 AM - INFO - device_classes - Mock1 - Sent command: dataset commit active
-10/28/2019 11:55:28 AM - INFO - device_classes - Mock1 - Sent command: panid 0xdead
-10/28/2019 11:55:28 AM - INFO - device_classes - Mock1 - Sent command: ifconfig up
-10/28/2019 11:55:28 AM - INFO - device_classes - Mock1 - Sent command: thread start
-10/28/2019 11:55:28 AM - INFO - device_classes - Mock1 - Sent command: ipaddr
-10/28/2019 11:55:28 AM - INFO - device_classes - Mock0 - Sent command: eui64
-10/28/2019 11:55:28 AM - INFO - device_classes - Mock1 - Sent command: dataset init new
-10/28/2019 11:55:28 AM - INFO - device_classes - Mock1 - Sent command: dataset
-10/28/2019 11:55:28 AM - INFO - device_classes - Mock1 - Sent command: dataset commit active
-10/28/2019 11:55:28 AM - INFO - device_classes - Mock1 - Sent command: panid 0xdead
-10/28/2019 11:55:28 AM - INFO - device_classes - Mock1 - Sent command: ifconfig up
-10/28/2019 11:55:28 AM - INFO - device_classes - Mock1 - Sent command: thread start
-10/28/2019 11:55:28 AM - INFO - device_classes - Mock1 - Sent command: ipaddr
-10/28/2019 11:55:28 AM - INFO - device_classes - Mock2 - Sent command: eui64
-10/28/2019 11:55:29 AM - INFO - device_classes - Mock0 - Sent command: scan
-10/28/2019 11:55:29 AM - INFO - device_classes - Mock1 - Sent command: commissioner start
-10/28/2019 11:55:29 AM - INFO - device_classes - Mock2 - Sent command: scan
-10/28/2019 11:55:29 AM - INFO - device_classes - Mock1 - Sent command: commissioner start
-10/28/2019 11:55:29 AM - INFO - device_classes - Mock1 - Sent command: commissioner joiner add  AAAA
-10/28/2019 11:55:29 AM - INFO - device_classes - Mock1 - Sent command: commissioner joiner add  AAAA
-10/28/2019 11:55:30 AM - INFO - device_classes - Mock0 - Sent command: ifconfig up
-10/28/2019 11:55:30 AM - INFO - device_classes - Mock2 - Sent command: ifconfig up
-10/28/2019 11:55:30 AM - INFO - device_classes - Mock0 - Sent command: panid 0xdead
-10/28/2019 11:55:30 AM - INFO - device_classes - Mock2 - Sent command: panid 0xdead
-10/28/2019 11:55:30 AM - INFO - device_classes - Mock0 - Sent command: joiner start AAAA
-10/28/2019 11:55:30 AM - INFO - device_classes - Mock2 - Sent command: joiner start AAAA
-10/28/2019 11:55:30 AM - INFO - device_classes - Mock0 - Sent command: scan
-10/28/2019 11:55:30 AM - INFO - device_classes - Mock2 - Sent command: scan
-10/28/2019 11:55:30 AM - INFO - manager - Waiting for the joiner answer...
-10/28/2019 11:55:30 AM - INFO - manager - Waiting for the joiner answer...
-10/28/2019 11:55:30 AM - INFO - device_classes - Mock0 - Sent command: ifconfig up
-10/28/2019 11:55:30 AM - INFO - device_classes - Mock2 - Sent command: ifconfig up
-10/28/2019 11:55:30 AM - INFO - device_classes - Mock0 - Sent command: thread start
-10/28/2019 11:55:30 AM - INFO - device_classes - Mock2 - Sent command: thread start
-10/28/2019 11:55:30 AM - INFO - manager - All devices connected
-10/28/2019 11:55:30 AM - INFO - device_classes - Mock0 - Sent command: udp open
-10/28/2019 11:55:30 AM - INFO - device_classes - Mock0 - Sent command: udp bind :: 1212
-10/28/2019 11:55:30 AM - INFO - device_classes - Mock0 - Sent command: ipaddr
-10/28/2019 11:55:30 AM - INFO - device_classes - Mock1 - Sent command: udp open
-10/28/2019 11:55:30 AM - INFO - device_classes - Mock2 - Sent command: udp open
-10/28/2019 11:55:30 AM - INFO - device_classes - Mock1 - Sent command: udp connect  1212
-10/28/2019 11:55:30 AM - INFO - device_classes - Mock2 - Sent command: udp connect  1212
-10/28/2019 11:55:30 AM - INFO - device_classes - Mock0 - There's no terminal for Mock0 device.
-10/28/2019 11:55:30 AM - INFO - device_classes - Mock1 - There's no terminal for Mock1 device.
-10/28/2019 11:55:30 AM - INFO - device_classes - Mock2 - There's no terminal for Mock2 device.
+10/31/2019 11:13:57 AM - INFO - device_classes - Mock0 - Sent command: factoryreset
+10/31/2019 11:13:57 AM - INFO - device_classes - Mock1 - Sent command: factoryreset
+10/31/2019 11:13:57 AM - INFO - device_classes - Mock2 - Sent command: factoryreset
+10/31/2019 11:13:58  - INFO - device_classes - Mock1 - Sent command: dataset init new
+10/31/2019 11:13:58  - INFO - device_classes - Mock1 - Sent command: dataset
+10/31/2019 11:13:58  - INFO - device_classes - Mock1 - Sent command: dataset commit active
+10/31/2019 11:13:58  - INFO - device_classes - Mock1 - Sent command: panid 0xdead
+10/31/2019 11:13:58  - INFO - device_classes - Mock1 - Sent command: ifconfig up
+10/31/2019 11:13:58  - INFO - device_classes - Mock1 - Sent command: thread start
+10/31/2019 11:13:58  - INFO - device_classes - Mock1 - Sent command: ipaddr
+10/31/2019 11:13:58  - INFO - device_classes - Mock0 - Sent command: eui64
+10/31/2019 11:13:58  - INFO - device_classes - Mock1 - Sent command: dataset init new
+10/31/2019 11:13:58  - INFO - device_classes - Mock1 - Sent command: dataset
+10/31/2019 11:13:58  - INFO - device_classes - Mock1 - Sent command: dataset commit active
+10/31/2019 11:13:58  - INFO - device_classes - Mock1 - Sent command: panid 0xdead
+10/31/2019 11:13:58  - INFO - device_classes - Mock1 - Sent command: ifconfig up
+10/31/2019 11:13:58  - INFO - device_classes - Mock1 - Sent command: thread start
+10/31/2019 11:13:58  - INFO - device_classes - Mock1 - Sent command: ipaddr
+10/31/2019 11:13:58  - INFO - device_classes - Mock2 - Sent command: eui64
+10/31/2019 11:13:59  - INFO - device_classes - Mock0 - Sent command: scan
+10/31/2019 11:13:59  - INFO - device_classes - Mock1 - Sent command: commissioner start
+10/31/2019 11:13:59  - INFO - device_classes - Mock2 - Sent command: scan
+10/31/2019 11:13:59  - INFO - device_classes - Mock1 - Sent command: commissioner start
+10/31/2019 11:14:00  - INFO - device_classes - Mock1 - Sent command: commissioner joiner add  AAAA
+10/31/2019 11:14:00  - INFO - device_classes - Mock1 - Sent command: commissioner joiner add  AAAA
+10/31/2019 11:14:00  - INFO - device_classes - Mock0 - Sent command: ifconfig up
+10/31/2019 11:14:00  - INFO - device_classes - Mock0 - Sent command: panid 0xdead
+10/31/2019 11:14:00  - INFO - device_classes - Mock2 - Sent command: ifconfig up
+10/31/2019 11:14:00  - INFO - device_classes - Mock0 - Sent command: joiner start AAAA
+10/31/2019 11:14:00  - INFO - device_classes - Mock2 - Sent command: panid 0xdead
+10/31/2019 11:14:00  - INFO - device_classes - Mock0 - Sent command: scan
+10/31/2019 11:14:00  - INFO - device_classes - Mock2 - Sent command: joiner start AAAA
+10/31/2019 11:14:00  - INFO - manager - Waiting for the joiner answer...
+10/31/2019 11:14:00  - INFO - device_classes - Mock2 - Sent command: scan
+10/31/2019 11:14:00  - INFO - manager - Waiting for the joiner answer...
+10/31/2019 11:14:00  - INFO - device_classes - Mock2 - Sent command: ifconfig up
+10/31/2019 11:14:00  - INFO - device_classes - Mock2 - Sent command: thread start
+10/31/2019 11:14:00  - INFO - device_classes - Mock0 - Sent command: ifconfig up
+10/31/2019 11:14:00  - INFO - device_classes - Mock0 - Sent command: thread start
+10/31/2019 11:14:00  - INFO - manager - All devices connected
+10/31/2019 11:14:00  - INFO - device_classes - Mock0 - Sent command: udp open
+10/31/2019 11:14:00  - INFO - device_classes - Mock0 - Sent command: udp bind :: 1212
+10/31/2019 11:14:00  - INFO - device_classes - Mock0 - Sent command: ipaddr
+10/31/2019 11:14:00  - INFO - device_classes - Mock1 - Sent command: udp open
+10/31/2019 11:14:00  - INFO - device_classes - Mock1 - Sent command: udp connect  1212
+10/31/2019 11:14:00  - INFO - device_classes - Mock2 - Sent command: udp open
+10/31/2019 11:14:00  - INFO - device_classes - Mock2 - Sent command: udp connect  1212
+10/31/2019 11:14:00  - INFO - device_classes - Mock0 - There's no terminal for Mock0 device.
+10/31/2019 11:14:00  - INFO - device_classes - Mock1 - There's no terminal for Mock1 device.
+10/31/2019 11:14:00  - INFO - device_classes - Mock2 - There's no terminal for Mock2 device.
