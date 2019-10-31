@@ -14,7 +14,8 @@ class DeviceManager(object):
         self.devices = list()
         self.topology = None
         self.commissioner_id = config['device']['commissioner_device_id']
-        self.logger = logging.getLogger(__name__)  
+        self.logger = logging.getLogger(__name__) 
+        self.config = config 
 
     @staticmethod
     def get_tty():
@@ -299,5 +300,5 @@ class DeviceManager(object):
         
         # TODO Afegir config per nom del arxiu
         # Export image and open with eog
-        plt.savefig('foo.png')
-        os.system("eog foo.png &")
+        plt.savefig(self.config['topology']['file_name'])
+        os.system(f"eog {self.config['topology']['file_name']} &")
