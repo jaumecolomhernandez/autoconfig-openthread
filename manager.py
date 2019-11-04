@@ -141,6 +141,10 @@ class DeviceManager(object):
         time.sleep(0.5) 
         joiner.send_command("ipaddr add dead:dead:cafe:cafe:dead:dead:cafe:0001")
         commissioner.send_command("ipaddr add dead:dead:cafe:cafe:dead:dead:cafe:0002")
+        joiner.send_command("udp open")
+        joiner.send_command("udp bind :: 1212")
+        commissioner.send_command("udp open")
+        commissioner.send_command("udp bind :: 1212")
 
     def open_udp_communication(self, receiver):
         pass
