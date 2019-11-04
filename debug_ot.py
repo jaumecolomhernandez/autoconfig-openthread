@@ -1,35 +1,31 @@
-from manager import DeviceManager
 import yaml
 import threading
 import logging
-import logger
+import sys
 
+sys.path.append('src/')
+import src.ot_functions as ot
+from src.manager import DeviceManager
 
 if __name__ == "__main__":
 
-    file = open("config.yaml", 'r') 
+    file = open("debug_config.yaml", 'r') 
     config = yaml.safe_load(file)
-    config['open_terms']
-
-    # Run logger module, to configure handlers and formats
-    logger.init()
-    
-    # Create a logger
-    logger = logging.getLogger(__name__)
 
     # Instantiate the DeviceManager
     PAEManager = DeviceManager(config)
 
+    # Get a logger
+    logger = PAEManager.logger
+
     # Get devices(boards) in the system
-    dc = config['device']
-    
-    if dc['device_type'] == 'USB':
+    if config['device']['device_type'] == 'USB':
         devices = PAEManager.get_USBDevices()
 
-    elif dc['device_type'] == 'Mock':
-        devices = PAEManager.get_MockDevices(dc['mock_config']['number'],dc['commissioner_device_id'])
+    elif config['device']['device_type'] == 'Mock':
+        devices = PAEManager.get_MockDevices(config['device']['mock_config']['number'],config['device']['commissioner_device_id'])
 
-    elif dc['device_type'] == 'HTTP':
+    elif config['device']['device_type'] == 'HTTP':
         logger.info('Device not yet implemented')
         exit()
     else:
@@ -37,8 +33,6 @@ if __name__ == "__main__":
         exit()
 
     PAEManager.devices = devices
-
-    # TODO: Decouple configuration from the code. Create YAML file with all the configs
 
     # Set topology
     top = PAEManager.all_to_one()
@@ -48,7 +42,7 @@ if __name__ == "__main__":
     if config['threading']:
         devices_resetting = list()
         for dev in PAEManager.devices:
-            devices_resetting.append(threading.Thread(target=PAEManager.reset_device, args=(dev,)))
+            devices_resetting.append(threading.Thread(target=ot.reset_device, args=(dev,)))
             devices_resetting[-1].start()
 
         # Wait for all the boards to open the udp port
@@ -56,29 +50,30 @@ if __name__ == "__main__":
         
     else:
         for dev in PAEManager.devices:
-            PAEManager.reset_device(dev)
+            ot.reset_device(dev)
 
     # Print the topology
     if config['topology']['plot']:
         PAEManager.plot_graph()
     
     # Create network
+    # TODO: Redo the apply_topology function bc no longer ok
     PAEManager.apply_topology()
     
     # Open UDP and connect all the boards
     if config['threading']:
         openingudps=list()
-        ip = PAEManager.open_udp_communication(PAEManager.devices[0])
+        ip = ot.open_udp_communication(PAEManager.devices[0])
         for dev in PAEManager.devices[1:]:
-            openingudps.append(threading.Thread(target=PAEManager.udp_connect, args=(ip, dev)))
+            openingudps.append(threading.Thread(target=ot.udp_connect, args=(ip, dev)))
             openingudps[-1].start()
 
         # Wait for all the boards to open the udp port
         [openedudp.join() for openedudp in openingudps]
     else:
-        ip = PAEManager.open_udp_communication(PAEManager.devices[0])
+        ip = ot.open_udp_communication(PAEManager.devices[0])
         for dev in PAEManager.devices[1:]:
-            PAEManager.udp_connect(ip, dev)
+            ot.udp_connect(ip, dev)
     
     if config['open_terms']:   # See config.yaml    
         # Open terminal for each device   

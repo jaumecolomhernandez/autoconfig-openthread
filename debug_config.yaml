@@ -13,7 +13,7 @@ device:
 topology:
   topology_type: 'all_to_one' # Currently only implemented 'all_to_one'
   plot: True                  # Requires the networkX package
-  file_name: 'foo.png'                 
+  file_name: 'docs/foo.png'                 
 # Terminal flag
 open_terms: True
 threading: True

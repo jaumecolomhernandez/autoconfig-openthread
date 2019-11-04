@@ -5,17 +5,44 @@ import time
 import device_classes as d
 import threading
 import logging
+import ot_functions as ot
 
 
 class DeviceManager(object):
     """ """
 
     def __init__(self, config):
+        """  """
+        
         self.devices = list()
         self.topology = None
         self.commissioner_id = config['device']['commissioner_device_id']
-        self.logger = logging.getLogger(__name__) 
         self.config = config 
+
+        
+        self.init_log(config)
+        self.logger = logging.getLogger(__name__) 
+    
+    def init_log(self, config):
+        """  """
+        # Create a custom logger, defining from which level the logger will handle errors
+        logger = logging.getLogger()
+        logger.setLevel(logging.DEBUG)
+
+        # Create a handler to display by console
+        handler = logging.StreamHandler()
+        
+        # Defining the level of the handler, reading from the config.yalm
+        handler.setLevel(config['logger']['level'])
+
+        # Read the format from de config.yalm and create a Formatter
+        format = logging.Formatter(config['logger']['format'],  datefmt='%m/%d/%Y %I:%M:%S')
+        
+        # Add the Formatter to the handler
+        handler.setFormatter(format)
+
+        # Add handler to the logger
+        logger.addHandler(handler)
 
     @staticmethod
     def get_tty():
@@ -72,94 +99,7 @@ class DeviceManager(object):
     @staticmethod
     def get_HTTPDevices():
         pass
-
-    #####################################################################################################
-    # USER METHODS
-    # TODO: implement async methods for all the functions!
-    def initialize_commissioner(self, device):
-        """ Initializes the board with the necessary commands """
-
-        # initializer commands
-        init_commands = [
-            "dataset init new",
-            "dataset",
-            "dataset commit active",
-            "panid 0xdead",
-            "ifconfig up",
-            "thread start",
-            "ipaddr",
-        ]
-        # Call every command
-        for command in init_commands:
-            device.send_command(command)
-
-        device.isCommissioner = True
-
-    def authenticate(self, commissioner, joiner):
-        """ Authenticates a joiner device in the commissioner network 
-            Params:
-            - commissioner: Device object
-            -
-            Returns:
-            - 
-        """
-
-        if not commissioner.isCommissioner:
-            self.logger.error('{commissioner.name} is not a Commissioner')
-
-        # TODO: Further comment the function
-
-        # get the eui64 from the joiner
-        commands = joiner.send_command("eui64", back=True)
-        euid = commands[2][:-2]
-
-        time.sleep(1)
-        joiner.send_command("scan")
-        joiner.read_answer()
-
-        commissioner.send_command("commissioner start")
-        time.sleep(0.5)
-        commissioner.send_command(f"commissioner joiner add {euid} AAAA")
-
-        time.sleep(0.5)
-        joiner.send_command("ifconfig up")
-        joiner.send_command("panid 0xdead")
-        joiner.send_command("joiner start AAAA")
-
-        # scan the network
-        joiner.send_command("scan")
-        joiner.read_answer()
-
-        self.logger.info('Waiting for the joiner answer...')
-        try:
-            joiner.read_answer(ending_ar=["Join success\r\n"])
-        except:
-            self.logger.warning('Stopped by the user!')
-            # print("Stopped by the user!")
-
-        joiner.send_command("ifconfig up")
-        joiner.send_command("thread start")
-
-    def open_udp_communication(self, receiver):
-        """ """
-        # Open the commissioner's udp port
-        receiver.send_command("udp open")
-        receiver.send_command("udp bind :: 1212")
-
-        ips = receiver.send_command("ipaddr", back=True)
-        send_ip = ips[1][:-2]
-
-        return send_ip
-
-    def udp_connect(self, send_ip, sender):
-        """ """
-        sender.send_command("udp open")
-        sender.send_command(f"udp connect {send_ip} 1212")
-
-    def reset_device(self, device):
-        """ Calls factoryreset method on the board """
-        device.read_answer(timeout=4)
-        device.send_command("factoryreset", timeout=3)
+    
 
     ################################################################################################
     # (TOPOLOGY RELATED FUNCTIONS)
@@ -236,10 +176,10 @@ class DeviceManager(object):
 
                 # Check that the device is initalized to work as a commissioner
                 if commissioner.isCommissioner:
-                    self.initialize_commissioner(commissioner)
+                    ot.initialize_commissioner(commissioner)
 
                 # Authenticate both devices
-                joiners.append(threading.Thread(target=self.authenticate, args=(commissioner, joiner)))
+                joiners.append(threading.Thread(target=ot.authenticate, args=(commissioner, joiner)))
                 joiners[-1].start()
                 # self.authenticate(commissioner, joiner)
         
@@ -256,7 +196,6 @@ class DeviceManager(object):
         log = logging.getLogger('matplotlib')
         log.setLevel(logging.ERROR)
         
-        # TODO import only the used functions
         # Necessary imports
         from networkx import parse_adjlist, draw
         from matplotlib.pyplot import figure, savefig
