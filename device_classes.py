@@ -1,6 +1,6 @@
 from abc import ABC, abstractmethod
 from os import system
-
+import logging
 
 class Device(ABC):
     """ Abstract class for the Device object. It exposes a common interface 
@@ -8,7 +8,8 @@ class Device(ABC):
     by the USBDevice, HTTPDevice and MockDevice. """
 
     # TODO: Complete the method docstrings
-
+    
+    # TODO __str__
     @abstractmethod
     def __init__(self, id, name, obj):
         """"""
@@ -16,6 +17,8 @@ class Device(ABC):
         self.name = name
         self.obj = obj
         self.isCommissioner = False
+        # Create a logger
+        self.logger = logging.getLogger(__name__)
 
     @abstractmethod
     def send_command(self):
@@ -63,10 +66,13 @@ class USBDevice(Device):
         data = ""
         # Iterate until we read the desired response
         while not (data in endings):
+        
             # Read line from the serial port
-            
-            # TODO: Catch exception when error in decoding the line
-            data = self.obj.readline().decode("ascii")
+            try:
+                data = self.obj.readline().decode("ascii")
+            except Exception as e:
+                self.logger.error(f"There has been a problem with the string decodification", exc_info=e)
+
 
             # Store data if needed (back flag)
             ret.append(data)
@@ -115,7 +121,7 @@ class MockDevice(Device):
 
     def send_command(self, command, back=False, ending_ar=None, timeout=None):
         """ """
-        print(f"{self.name} - Sent command: {command}")
+        self.logger.info(f"{self.name} - Sent command: {command}")
         # TODO: complete the data structures to closely relate the real ones
         # TODO: add random delays to better simulate a real device
         if command == "eui64":
@@ -130,4 +136,4 @@ class MockDevice(Device):
 
     def terminal(self):
         """ """
-        print(f"There's no terminal for {self.name} device.")
+        self.logger.info(f"{self.name} - There's no terminal for {self.name} device.")

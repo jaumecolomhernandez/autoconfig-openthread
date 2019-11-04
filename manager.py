@@ -4,6 +4,7 @@ import serial
 import time
 import device_classes as d
 import threading
+import logging
 
 
 class DeviceManager(object):
@@ -12,7 +13,9 @@ class DeviceManager(object):
     def __init__(self, config):
         self.devices = list()
         self.topology = None
-        self.commissioner_id = config['device']['commissioner_device_id']    
+        self.commissioner_id = config['device']['commissioner_device_id']
+        self.logger = logging.getLogger(__name__) 
+        self.config = config 
 
     @staticmethod
     def get_tty():
@@ -22,9 +25,6 @@ class DeviceManager(object):
         result = os.popen(
             'find /dev/serial/by-id/ -maxdepth 1 -type l -ls | cut -d"/" -f5- '
         ).read()
-
-        # TODO: Implementation of logging module with NORMAL and DEBUG modes
-        # print (result) # debug line
 
         # Keep the last number of every line.
         values = [re.findall(r"[0-9]+$", line)[0] for line in result.splitlines()]
@@ -54,7 +54,7 @@ class DeviceManager(object):
         return devices
 
     @staticmethod
-    def get_MockDevices(number):
+    def get_MockDevices(number, commissioner_device_id):
         """ Returns a list with n MockDevices """
         # Instantiate list
         devices = list()
@@ -64,6 +64,9 @@ class DeviceManager(object):
             new_dev = d.MockDevice(i, "Mock" + str(i), None)
             devices.append(new_dev)
 
+        # Tags the commissioner device
+        devices[commissioner_device_id].isCommissioner=True
+        
         return devices
 
     @staticmethod
@@ -86,7 +89,6 @@ class DeviceManager(object):
             "thread start",
             "ipaddr",
         ]
-
         # Call every command
         for command in init_commands:
             device.send_command(command)
@@ -103,7 +105,7 @@ class DeviceManager(object):
         """
 
         if not commissioner.isCommissioner:
-            print("ERROR: {commissioner} is no a Commissioner")
+            self.logger.error('{commissioner.name} is not a Commissioner')
 
         # TODO: Further comment the function
 
@@ -128,12 +130,12 @@ class DeviceManager(object):
         joiner.send_command("scan")
         joiner.read_answer()
 
-        # TODO Implement the loggin module with two levels
-        print("Waiting for the joiner answer...")
+        self.logger.info('Waiting for the joiner answer...')
         try:
             joiner.read_answer(ending_ar=["Join success\r\n"])
         except:
-            print("Stopped by the user!")
+            self.logger.warning('Stopped by the user!')
+            # print("Stopped by the user!")
 
         joiner.send_command("ifconfig up")
         joiner.send_command("thread start")
@@ -178,7 +180,7 @@ class DeviceManager(object):
         if result:
             return result
         else:
-            print("ERROR: Device does not exist in the list! Check again")
+            self.logger.error('Device does not exist in the list! Check again')
 
     def all_to_one(self):
         """ Creates all to one topology
@@ -188,7 +190,7 @@ class DeviceManager(object):
         """
         # Length check for the topology
         if len(self.devices) < 2:
-            print("ERROR: Can't create topology if < 2 devices")
+            self.logger.error('Can not create topology if < 2 devices')
             return
 
         # It is better to use the ids as they are integers and provide a
@@ -215,10 +217,7 @@ class DeviceManager(object):
         
         # Check that there's a topology set
         if not self.topology:
-            print(
-                "ERROR: There's no topology specified! Please indicate one \
-and call the method again"
-            )
+            self.logger.error('There is no topology specified! Please indicate one and call the method again')
             return
         
         # A list of all the threads joining the network
@@ -236,7 +235,7 @@ and call the method again"
                 commissioner = self.getDevice(id=device_id)
 
                 # Check that the device is initalized to work as a commissioner
-                if not commissioner.isCommissioner:
+                if commissioner.isCommissioner:
                     self.initialize_commissioner(commissioner)
 
                 # Authenticate both devices
@@ -246,7 +245,7 @@ and call the method again"
         
         # Wait for all the nodes to join the network
         [joiner.join() for joiner in joiners]
-        print("All devices connected")
+        self.logger.info('All devices connected')
 
     
     def plot_graph(self):
@@ -254,11 +253,13 @@ and call the method again"
             It generates an image with the networkx library, stores it
             and opens the image.
         """
-
+        log = logging.getLogger('matplotlib')
+        log.setLevel(logging.ERROR)
+        
+        # TODO import only the used functions
         # Necessary imports
-        from operator import itemgetter
-        import networkx as nx
-        import matplotlib.pyplot as plt
+        from networkx import parse_adjlist, draw
+        from matplotlib.pyplot import figure, savefig
 
         # Vars
         lines = []
@@ -277,32 +278,26 @@ and call the method again"
             lines.append(f'{key+1} {intermed}')
         
         # Create networkx Graph from the adjacency list
-        G = nx.parse_adjlist(lines, nodetype = int)
+        G = parse_adjlist(lines, nodetype = int)
         
         # Get a dict with the labels of every node
         labels = dict((n, self.getDevice(n-1).name) for n in G.nodes())
         
-        # Find node with largest degree
-        node_and_degree = G.degree()
-        (largest_hub, degree) = sorted(node_and_degree, key=itemgetter(1))[-1]
+        # Asign a colour to each node. If is a commissioner node, blue will be assigned.
+        # If is a joiner, green will be assigned
+        colours=[]
+        for n in G.nodes():
+            if self.getDevice(n-1).isCommissioner:
+                colours.insert(n,'b')
+            else:
+                colours.insert(n,'g')
         
-        # Create ego graph of main hub
-        hub_ego = nx.ego_graph(G, largest_hub)
-        
-        # larger figure size
-        plt.figure(3,figsize=(12,12))
+        # Larger figure size
+        figure(3,figsize=(12,12))
         
         # Draw graph
-        pos = nx.spring_layout(hub_ego)
-        nx.draw(hub_ego, pos, node_color='b', node_size=5000, with_labels=True, font_weight='bold', labels=labels)
-         
-        
-        # networkx call to generate the image
-        nx.draw(hub_ego, pos, with_labels=True, font_weight='bold',nodelist=[largest_hub], node_size=5000, node_color='g', labels=labels)
+        draw(G, node_size=5000, with_labels=True, font_weight='bold', labels=labels, node_color=colours)
         
         # Export image and open with eog
-        plt.savefig('foo.png')
-        os.system("eog foo.png &")
-
-    
-
+        savefig(self.config['topology']['file_name'])
+        os.system(f"eog {self.config['topology']['file_name']} &")

@@ -1,6 +1,8 @@
 from manager import DeviceManager
 import yaml
 import threading
+import logging
+import logger
 
 
 if __name__ == "__main__":
@@ -9,22 +11,29 @@ if __name__ == "__main__":
     config = yaml.safe_load(file)
     config['open_terms']
 
+    # Run logger module, to configure handlers and formats
+    logger.init()
+    
+    # Create a logger
+    logger = logging.getLogger(__name__)
+
     # Instantiate the DeviceManager
     PAEManager = DeviceManager(config)
 
     # Get devices(boards) in the system
     dc = config['device']
+    
     if dc['device_type'] == 'USB':
         devices = PAEManager.get_USBDevices()
 
     elif dc['device_type'] == 'Mock':
-        devices = PAEManager.get_MockDevices(dc['mock_config']['number'])
+        devices = PAEManager.get_MockDevices(dc['mock_config']['number'],dc['commissioner_device_id'])
 
     elif dc['device_type'] == 'HTTP':
-        print('Device not yet implemented')
+        logger.info('Device not yet implemented')
         exit()
     else:
-        print('Device type does not exist')
+        logger.critical('Device type does not exist')
         exit()
 
     PAEManager.devices = devices
@@ -36,8 +45,18 @@ if __name__ == "__main__":
     PAEManager.topology = top
 
     # Factory reset the boards
-    for dev in PAEManager.devices:
-        PAEManager.reset_device(dev)
+    if config['threading']:
+        devices_resetting = list()
+        for dev in PAEManager.devices:
+            devices_resetting.append(threading.Thread(target=PAEManager.reset_device, args=(dev,)))
+            devices_resetting[-1].start()
+
+        # Wait for all the boards to open the udp port
+        [reseted_device.join() for reseted_device in devices_resetting]
+        
+    else:
+        for dev in PAEManager.devices:
+            PAEManager.reset_device(dev)
 
     # Print the topology
     if config['topology']['plot']:
@@ -47,14 +66,19 @@ if __name__ == "__main__":
     PAEManager.apply_topology()
     
     # Open UDP and connect all the boards
-    openingudps=list()
-    ip = PAEManager.open_udp_communication(PAEManager.devices[0])
-    for dev in PAEManager.devices[1:]:
-        openingudps.append(threading.Thread(target=PAEManager.udp_connect, args=(ip, dev)))
-        openingudps[-1].start()
+    if config['threading']:
+        openingudps=list()
+        ip = PAEManager.open_udp_communication(PAEManager.devices[0])
+        for dev in PAEManager.devices[1:]:
+            openingudps.append(threading.Thread(target=PAEManager.udp_connect, args=(ip, dev)))
+            openingudps[-1].start()
 
-    # Wait for all the boards to open the udp port
-    [openedudp.join() for openedudp in openingudps]
+        # Wait for all the boards to open the udp port
+        [openedudp.join() for openedudp in openingudps]
+    else:
+        ip = PAEManager.open_udp_communication(PAEManager.devices[0])
+        for dev in PAEManager.devices[1:]:
+            PAEManager.udp_connect(ip, dev)
     
     if config['open_terms']:   # See config.yaml    
         # Open terminal for each device   
