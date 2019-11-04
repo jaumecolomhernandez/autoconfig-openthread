@@ -16,7 +16,7 @@ if __name__ == "__main__":
     PAEManager = DeviceManager(config)
 
     # Get a logger
-    logger = PAEManager.logger
+    log = PAEManager.log
 
     # Get devices(boards) in the system
     if config['device']['device_type'] == 'USB':
@@ -26,10 +26,10 @@ if __name__ == "__main__":
         devices = PAEManager.get_MockDevices(config['device']['mock_config']['number'],config['device']['commissioner_device_id'])
 
     elif config['device']['device_type'] == 'HTTP':
-        logger.info('Device not yet implemented')
+        log.info('Device not yet implemented')
         exit()
     else:
-        logger.critical('Device type does not exist')
+        log.critical('Device type does not exist')
         exit()
 
     PAEManager.devices = devices

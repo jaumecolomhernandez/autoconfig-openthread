@@ -21,13 +21,13 @@ class DeviceManager(object):
 
         
         self.init_log(config)
-        self.logger = logging.getLogger(__name__) 
+        self.log = logging.getLogger("PAEManager") 
     
     def init_log(self, config):
         """  """
         # Create a custom logger, defining from which level the logger will handle errors
-        logger = logging.getLogger()
-        logger.setLevel(logging.DEBUG)
+        log = logging.getLogger()
+        log.setLevel(logging.DEBUG)
 
         # Create a handler to display by console
         handler = logging.StreamHandler()
@@ -42,7 +42,10 @@ class DeviceManager(object):
         handler.setFormatter(format)
 
         # Add handler to the logger
-        logger.addHandler(handler)
+        log.addHandler(handler)
+    
+    def handle_request(self, message):
+        self.log.warning(f"Instruction unknown ({message})")
 
     @staticmethod
     def get_tty():
@@ -120,7 +123,7 @@ class DeviceManager(object):
         if result:
             return result
         else:
-            self.logger.error('Device does not exist in the list! Check again')
+            self.log.error('Device does not exist in the list! Check again')
 
     def all_to_one(self):
         """ Creates all to one topology
@@ -130,7 +133,7 @@ class DeviceManager(object):
         """
         # Length check for the topology
         if len(self.devices) < 2:
-            self.logger.error('Can not create topology if < 2 devices')
+            self.log.error('Can not create topology if < 2 devices')
             return
 
         # It is better to use the ids as they are integers and provide a
@@ -157,7 +160,7 @@ class DeviceManager(object):
         
         # Check that there's a topology set
         if not self.topology:
-            self.logger.error('There is no topology specified! Please indicate one and call the method again')
+            self.log.error('There is no topology specified! Please indicate one and call the method again')
             return
         
         # A list of all the threads joining the network
@@ -185,7 +188,7 @@ class DeviceManager(object):
         
         # Wait for all the nodes to join the network
         [joiner.join() for joiner in joiners]
-        self.logger.info('All devices connected')
+        self.log.info('All devices connected')
 
     
     def plot_graph(self):
