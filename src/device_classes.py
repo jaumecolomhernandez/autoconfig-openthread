@@ -18,7 +18,7 @@ class Device(ABC):
         self.obj = obj
         self.isCommissioner = False
         # Create a logger
-        self.logger = logging.getLogger(__name__)
+        self.logger = logging.getLogger(name)
 
     @abstractmethod
     def send_command(self):
@@ -43,6 +43,7 @@ class USBDevice(Device):
     def send_command(self, command, back=False, ending_ar=None, timeout=None):
         # Sends command and reads the response
         self.obj.write((command + "\n").encode())
+        self.logger.info(f"Sent command: {command}")
         return self.read_answer(back, ending_ar, timeout)
 
     def read_answer(self, back=False, ending_ar=None, timeout=None):
@@ -121,7 +122,7 @@ class MockDevice(Device):
 
     def send_command(self, command, back=False, ending_ar=None, timeout=None):
         """ """
-        self.logger.info(f"{self.name} - Sent command: {command}")
+        self.logger.info(f"Sent command: {command}")
         # TODO: complete the data structures to closely relate the real ones
         # TODO: add random delays to better simulate a real device
         if command == "eui64":
@@ -136,4 +137,4 @@ class MockDevice(Device):
 
     def terminal(self):
         """ """
-        self.logger.info(f"{self.name} - There's no terminal for {self.name} device.")
+        self.logger.warning(f"There's no terminal for {self.name} device.")
