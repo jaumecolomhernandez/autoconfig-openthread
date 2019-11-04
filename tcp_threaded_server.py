@@ -8,7 +8,6 @@ import logging
 import sys
 
 sys.path.append('src/')
-import src.ot_functions as ot
 from src.manager import DeviceManager
 
 # TODO: Pass PAEManager as reference
