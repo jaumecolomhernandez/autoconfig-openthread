@@ -100,7 +100,7 @@ class USBDevice(Device):
         )
 
 
-class HTTPDevice(Device):
+class TCPDevice(Device):
     """ Implementation of the Device class for HTTP controlled platforms. """
 
     def __init__(self, id, name, obj):

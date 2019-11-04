@@ -1,5 +1,9 @@
 # Configuration file for the autocommissioner program - PAE 
 
+# General config
+debug: True
+open_terms: True
+threading: True
 # Device related configs
 device: 
   device_type: 'Mock'         # Options are: 'USB', 'Mock' and 'HTTP' (although not implemented)
@@ -14,9 +18,7 @@ topology:
   topology_type: 'all_to_one' # Currently only implemented 'all_to_one'
   plot: True                  # Requires the networkX package
   file_name: 'docs/foo.png'                 
-# Terminal flag
-open_terms: True
-threading: True
+# Log config
 logger:
   format: '%(asctime)s|%(levelname)s|%(name)s|%(message)s'
   level: 'DEBUG'

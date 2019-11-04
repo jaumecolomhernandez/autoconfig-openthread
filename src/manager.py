@@ -1,11 +1,8 @@
-import os
-import re
-import serial
-import time
-import device_classes as d
-import threading
-import logging
+import os, re, time
+import threading, logging
+
 import ot_functions as ot
+import device_classes as d
 
 
 class DeviceManager(object):
@@ -22,6 +19,9 @@ class DeviceManager(object):
         
         self.init_log(config)
         self.log = logging.getLogger("PAEManager") 
+
+        if config['debug']:
+            import serial
     
     def init_log(self, config):
         """  """
