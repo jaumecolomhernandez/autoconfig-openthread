@@ -46,9 +46,9 @@ if __name__ == "__main__":
     PAEManager.apply_topology()
     
     # Open UDP and connect all the boards
-    #ip = PAEManager.open_udp_communication(PAEManager.devices[0])
-    #for dev in PAEManager.devices[1:]:
-     #   PAEManager.udp_connect(ip, dev)
+    # ip = PAEManager.open_udp_communication(PAEManager.devices[0])
+    for dev in devices:
+        ip_static_set(dev)
 
     
     if config['open_terms']:   # See config.yaml    
