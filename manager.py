@@ -173,7 +173,11 @@ class DeviceManager(object):
         """
         # Find the device in the list
         # (N time log) maybe use binary search if needed ?
-        result = next((dev for dev in self.devices if dev.id == id), None)
+        # result = next((dev for dev in self.devices if dev.id == id), None)
+        
+        self.logger.debug(f'Data a priori of the search is: {id}')
+        result = [dev for dev in self.devices if dev.id == id]
+        self.logger.debug(f'Result of the search is: {result}')
 
         # We check if it found the device, if not result will be None and
         # will evaluate to False in the if conditional
@@ -256,7 +260,6 @@ class DeviceManager(object):
         log = logging.getLogger('matplotlib')
         log.setLevel(logging.ERROR)
         
-        # TODO import only the used functions
         # Necessary imports
         from networkx import parse_adjlist, draw
         from matplotlib.pyplot import figure, savefig
@@ -301,3 +304,21 @@ class DeviceManager(object):
         # Export image and open with eog
         savefig(self.config['topology']['file_name'])
         os.system(f"eog {self.config['topology']['file_name']} &")
+        
+    # Hem retorna una llista buida
+    def get_ip(self, id):
+        [self.logger.debug(dev.id) for dev in self.devices]
+        ips = [dev.ip for dev in self.devices if dev.id == id]
+        [print(ip) for ip in ips]
+        return [dev.ip for dev in self.devices if dev.id == id]
+        
+    def send_msg(self, msg, source, destination):
+        self.logger.debug(f'{self.get_ip(destination)}')
+        [dev.send_command(f"udp send {self.get_ip(destination)[0]} 1212 {msg}") for dev in self.devices if dev.id == source]
+        self.logger.debug(f"udp send {self.get_ip(destination)[0]} 1212 {msg}")
+        
+    def send_a_command(self, id, command):
+        self.logger.debug(f'The passed id and command are: {id} and {command}')
+        [self.logger.debug(f'The id is: {dev.id}') for dev in self.devices]
+        return self.getDevice(id).send_command(command)
+        

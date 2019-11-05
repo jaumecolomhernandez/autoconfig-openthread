@@ -84,5 +84,9 @@ if __name__ == "__main__":
         # Open terminal for each device   
         for device in devices: 
             device.terminal()
-
+            
+    s = input('Send something some command\n').split(" ")
+    print(s)
+    PAEManager.send_a_command(s[0], s[1])
+    
     # TODO: Implement terminal for the program (cmd, ncurses or miniterm.py (from pyserial)) 

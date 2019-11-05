@@ -12,11 +12,13 @@ device:
 # Topology related configs
 topology:
   topology_type: 'all_to_one' # Currently only implemented 'all_to_one'
-  plot: True                  # Requires the networkX package
+  plot: False                  # Requires the networkX package
   file_name: 'foo.png'                 
 # Terminal flag
 open_terms: True
+# Activate Multithreading
 threading: True
+# Logger atributes
 logger:
   format: '%(asctime)s - %(levelname)s - %(name)s - %(message)s'
-  level: 'DEBUG'
+  level: 'DEBUG'              # Changes the level of the handler

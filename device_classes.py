@@ -19,6 +19,15 @@ class Device(ABC):
         self.isCommissioner = False
         # Create a logger
         self.logger = logging.getLogger(__name__)
+    
+    def __str__(self):
+        if self.isCommissioner:
+            return(f"{self.name} Commissioner")
+        else:
+            return(f"{self.name} Joiner")
+
+    def __repr__(self):
+        return self.__str__()
 
     @abstractmethod
     def send_command(self):
