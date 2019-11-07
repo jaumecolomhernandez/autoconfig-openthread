@@ -65,6 +65,7 @@ class DeviceManager(object):
         if message[0] == "AUTH":
             self.log.info("You called version")
         elif message[0] == "VERSION":
+            pass
         elif message[0] == "ORDER2":
             pass
         else:
