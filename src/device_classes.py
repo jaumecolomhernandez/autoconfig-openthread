@@ -101,13 +101,21 @@ class USBDevice(Device):
 
 
 class TCPDevice(Device):
-    """ Implementation of the Device class for HTTP controlled platforms. """
+    """ Implementation of the Device class for TCP controlled platforms. """
 
-    def __init__(self, id, name, obj):
+    def __init__(self, id, name, obj, host, port):
         super().__init__(id, name, obj)
+        self.host = host
+        self.port = port 
 
-    def send_command(self):
-        pass
+    def __str__(self):
+        return str(vars(self))
+
+    def __repr__(self):
+        return str(vars(self))
+
+    def send_command(self, command):
+        return self.obj.send(command.encode('ascii'))
 
     def read_answer(self):
         pass

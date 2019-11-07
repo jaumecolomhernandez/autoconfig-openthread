@@ -12,7 +12,7 @@ class DeviceManager(object):
         """  """
         
         self.devices = list()
-        self.topology = None
+        self.topology = {}
         self.commissioner_id = config['device']['commissioner_device_id']
         self.config = config 
 
@@ -43,9 +43,46 @@ class DeviceManager(object):
 
         # Add handler to the logger
         log.addHandler(handler)
+
+    def get_device(self, address_tuple):
+        for de in self.devices:
+            if de.host == address_tuple[0] and de.port == address_tuple[1]:
+                return de
+        return None
+
     
-    def handle_request(self, message):
-        self.log.warning(f"Instruction unknown ({message})")
+    def handle_request(self, message, address_tuple):
+
+        dev = self.get_device(address_tuple)
+        
+        message = message.split()
+
+        if len(message) == 0:
+            self.devices.remove(dev)
+            self.log.error(f"Device {address_tuple} disconnected")
+            return
+
+        if message[0] == "AUTH":
+            self.log.info("You called version")
+        elif message[0] == "VERSION":
+        elif message[0] == "ORDER2":
+            pass
+        else:
+            self.log.error(f"Instruction unknown ({message})")
+            
+
+    def add_TCPDevice(self, socket, host, port):
+        """ """
+        idn = len(self.devices)+1
+        dev = d.TCPDevice(idn, f"TCP{idn}", socket, host, port)
+        self.topology[idn] = []
+        self.devices.append(dev)
+
+    def get_sockets(self):
+        """ """
+        return [dev.obj for dev in self.devices]
+
+    ##############################################################################################
 
     @staticmethod
     def get_tty():
@@ -191,6 +228,7 @@ class DeviceManager(object):
         self.log.info('All devices connected')
 
     
+    
     def plot_graph(self):
         """ Plots the topology 
             It generates an image with the networkx library, stores it
@@ -235,7 +273,7 @@ class DeviceManager(object):
                 colours.insert(n,'g')
         
         # Larger figure size
-        figure(3,figsize=(12,12))
+        # figure(3,figsize=(12,12))
         
         # Draw graph
         draw(G, node_size=5000, with_labels=True, font_weight='bold', labels=labels, node_color=colours)
