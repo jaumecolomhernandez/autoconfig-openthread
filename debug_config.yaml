@@ -8,7 +8,7 @@ threading: True
 device: 
   device_type: 'Mock'         # Options are: 'USB', 'Mock' and 'HTTP' (although not implemented)
   mock_config:  
-    number: 3                # Number of devices to create
+    number: 4                # Number of devices to create
   tty_config:
   http_config:
   commissioner_device_id: 1   # Id of the device to be the commissioner and to receive the udp messages
