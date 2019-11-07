@@ -1,7 +1,7 @@
 # Configuration file for the autocommissioner program - PAE 
 
 # General config
-debug: True
+debug: False
 open_terms: True
 threading: True
 # Device related configs

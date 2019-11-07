@@ -102,11 +102,12 @@ class USBDevice(Device):
 
 class TCPDevice(Device):
     """ Implementation of the Device class for TCP controlled platforms. """
-
+    #todo: Afegir flag de connexió 
     def __init__(self, id, name, obj, host, port):
-        super().__init__(id, name, obj)
+        super().__init__(-1, name, obj)
         self.host = host
         self.port = port 
+        self.connexion = False
 
     def __str__(self):
         return str(vars(self))

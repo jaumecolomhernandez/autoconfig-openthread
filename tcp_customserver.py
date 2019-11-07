@@ -12,9 +12,10 @@ class TCPServer:
     def __init__(self, host, port):
         """ """
         self.host = host
-        self.port = port        
+        self.port = port       
+        self.ID = -1
+        self.connection = False
         self.server_socket = self.init_server(host, port)
-
     
     def init_server(self, host, port):
         """ """
@@ -56,9 +57,9 @@ class TCPServer:
                 if(sock == self.server_socket):
                     
                     client_sock, client_addr = self.server_socket.accept() 
-
                     # Creates new device in the PAEManager
                     PAEManager.add_TCPDevice(client_sock, client_addr[0], client_addr[1])
+                    # todo: Ficar gestio de dispositius connectats, 
 
                     log.info(f"Adding new device {client_addr} to PAEManager")
                     client_sock.send(f"Socket {client_addr} added to the server".encode("ascii"))
@@ -72,6 +73,7 @@ class TCPServer:
                         PAEManager.handle_request(message, add)
                     else:
                         log.info(f"Received: {message} from {add}")
+                        #todo: canviar lu de la ID per aqui. Mirar com canviar el device des d'aqui
                         PAEManager.handle_request(message, add)
 
                     
