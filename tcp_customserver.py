@@ -8,6 +8,9 @@ import sys
 sys.path.append('src/')
 from src.manager import DeviceManager
 
+sys.path.append('flask_server/')
+from flask_server.main import app as FlaskServer
+
 class TCPServer:
     def __init__(self, host, port):
         """ """
@@ -89,7 +92,7 @@ if __name__ == "__main__":
 
     # Server object/s
     internal_server = TCPServer('localhost', 12342)
-    external_server = None  # TODO: Attach HTPP server (maybe flask) 
+    external_server = FlaskServer  # TODO: Attach HTPP server (maybe flask)
 
     # Get a logger
     log = logging.getLogger("Server")
@@ -99,6 +102,9 @@ if __name__ == "__main__":
     # And start server
     iserver_thread = threading.Thread(target=internal_server.run_forever)
     iserver_thread.start()
+
+    eserver_thread = threading.Thread(target=external_server.run)
+    eserver_thread.start()
 
 
     #print("This thing keeps working")
