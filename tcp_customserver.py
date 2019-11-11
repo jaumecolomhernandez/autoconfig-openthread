@@ -11,6 +11,8 @@ from src.manager import DeviceManager
 sys.path.append('flask_server/')
 from flask_server.main import app as FlaskServer
 
+TEST ="hOLA"
+
 class TCPServer:
     def __init__(self, host, port):
         """ """
