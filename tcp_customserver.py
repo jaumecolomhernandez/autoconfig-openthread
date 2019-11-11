@@ -83,7 +83,7 @@ class TCPServer:
 
                     
                     
-#                   
+#        
 if __name__ == "__main__":
 
     file = open("debug_config.yaml", 'r') 
@@ -101,12 +101,12 @@ if __name__ == "__main__":
 
     log.info("LOG STARTED")
 
+
     # And start server
     iserver_thread = threading.Thread(target=internal_server.run_forever)
     iserver_thread.start()
 
     eserver_thread = threading.Thread(target=external_server.run)
     eserver_thread.start()
-
-
+    #external_server.run(debug=False)
     #print("This thing keeps working")
