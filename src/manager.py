@@ -68,13 +68,13 @@ class DeviceManager(object):
                     antic_dev.obj = dev.obj
                     antic_dev.connexion = True
                     self.devices.remove(dev)
-                    self.log.error(f"Dispositiu [Tuple{address_tuple} ID:{dev.id}] reconnectat correctament.")
-                    dev.send_command("Dispositiu reconnectat correctament.")
+                    self.log.info(f"Dispositiu [Tuple{address_tuple} ID:{dev.id}] reconnectat correctament.")
+                    dev.send_command("Dispositiu reconnectat correctament.\r\n")
                 else: #Nou dispositiu, posem la ID i connexion = True
                     dev.id = message[1]
                     dev.connexion = True
-                    self.log.error(f"Nou dispositiu [Tuple{address_tuple} ID:{dev.id}] connectat correctament.")
-                    dev.send_command("Nou dispositiu connectat correctament.")
+                    self.log.info(f"Nou dispositiu [Tuple{address_tuple} ID:{dev.id}] connectat correctament.")
+                    dev.send_command("Nou dispositiu connectat correctament.\r\n")
 
             else:
                 self.log.error(f"ID del device {address_tuple} no enviat correctament")
