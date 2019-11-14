@@ -8,8 +8,6 @@ import sys
 sys.path.append('src/')
 from src.manager import DeviceManager
 
-sys.path.append('flask_server/')
-from flask_server.main import app as FlaskServer
 
 TEST ="hOLA"
 
@@ -71,6 +69,7 @@ class TCPServer:
                 # If not, it is an active device
                 else:
                     message = self.receive_message(sock)
+                    log.info("Missatge rebut")
                     add = sock.getpeername()
                     if len(message) == 0:
                         # Case null error
@@ -91,8 +90,8 @@ if __name__ == "__main__":
     PAEManager = DeviceManager(config)
 
     # Server object/s
-    internal_server = TCPServer('localhost', 12342)
-    external_server = FlaskServer  # TODO: Attach HTPP server (maybe flask)
+    internal_server = TCPServer('147.83.39.50', 12342)
+#   external_server = FlaskServer  # TODO: Attach HTPP server (maybe flask)
 
     # Get a logger
     log = logging.getLogger("Server")
@@ -104,7 +103,7 @@ if __name__ == "__main__":
     iserver_thread = threading.Thread(target=internal_server.run_forever)
     iserver_thread.start()
 
-    eserver_thread = threading.Thread(target=external_server.run)
-    eserver_thread.start()
+#    eserver_thread = threading.Thread(target=external_server.run)
+#    eserver_thread.start()
     #external_server.run(debug=False)
     #print("This thing keeps working")
