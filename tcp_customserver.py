@@ -91,7 +91,7 @@ if __name__ == "__main__":
 
     # Server object/s
     internal_server = TCPServer('localhost', 12342)
-    external_server = FlaskServer  # TODO: Attach HTPP server (maybe flask)
+#   external_server = FlaskServer  # TODO: Attach HTPP server (maybe flask)
 
     # Get a logger
     log = logging.getLogger("Server")
@@ -103,7 +103,7 @@ if __name__ == "__main__":
     iserver_thread = threading.Thread(target=internal_server.run_forever)
     iserver_thread.start()
 
-    eserver_thread = threading.Thread(target=external_server.run)
-    eserver_thread.start()
+#    eserver_thread = threading.Thread(target=external_server.run)
+#    eserver_thread.start()
     #external_server.run(debug=False)
     #print("This thing keeps working")
