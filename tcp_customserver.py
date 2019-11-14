@@ -8,8 +8,6 @@ import sys
 sys.path.append('src/')
 from src.manager import DeviceManager
 
-sys.path.append('flask_server/')
-from flask_server.main import app as FlaskServer
 
 TEST ="hOLA"
 
