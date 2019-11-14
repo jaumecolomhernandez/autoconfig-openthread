@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html>
+<head>
+<link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/login.css') }}">
+</head>
+<body>
+
+<div class="login">
+  <div class="login-triangle"></div>
+  
+  <h2 class="login-header">PAET Log in</h2>
+
+  <form class="login-container" action="" method="post">
+    <p><input type=text name=username placeholder="Username"></p>
+    <p><input type=password name=password placeholder="Password"></p>
+    <p><input type=submit value="Log in"></p>
+    <p class="err">{{ err }}</p>
+  </form>
+</div>
+
+</body>
+</html>

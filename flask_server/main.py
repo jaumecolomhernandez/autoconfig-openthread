@@ -58,17 +58,10 @@ def login():
 			login_user(user)
 			return redirect(request.args.get("next"))
 		else:
-			return abort(401)
+			return render_template('login.html', err="Wrong user/pw combination. Try again!")
 	else:
-		#TODO: RETURN A HTML
-		return Response(f'''
-	    <form action="" method="post">
-			Let's see this: {app.test}
-	        <p><input type=text name=username>
-	        <p><input type=password name=password>
-	        <p><input type=submit value=Login>
-	    </form>
-	    ''')
+		return render_template('login.html')
+
 
 @app.route("/logout")
 @login_required
