@@ -90,7 +90,7 @@ if __name__ == "__main__":
     PAEManager = DeviceManager(config)
 
     # Server object/s
-    internal_server = TCPServer('localhost', 12342)
+    internal_server = TCPServer('147.83.39.50', 12342)
 #   external_server = FlaskServer  # TODO: Attach HTPP server (maybe flask)
 
     # Get a logger
