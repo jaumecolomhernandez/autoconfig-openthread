@@ -2,6 +2,7 @@ from flask import Flask, render_template, Blueprint
 from flask_login import login_required
 
 routes_bp = Blueprint('routes', __name__, template_folder='templates')
+# TODO: Create complete UI using Bootstrap and Jquery
 
 @routes_bp.route("/")
 @login_required

@@ -4,9 +4,13 @@ import threading, logging
 import ot_functions as ot
 import device_classes as d
 
+
+
 class DeviceManager(object):
     """ """
-
+    # TODO: Complete all the docstrings
+    # TODO: Implement PEP8 in the most complete sense
+    
     def __init__(self, config):
         """  """
         
@@ -99,6 +103,14 @@ class DeviceManager(object):
         #self.ID-> Afegir ID
         idn = len(self.devices)+1
         dev = d.TCPDevice(idn, f"TCP{idn}", socket, host, port)
+        self.topology[idn] = []
+        self.devices.append(dev)
+
+    def add_HTTPDevice(self, ip):
+        """ """
+        #self.ID-> Afegir ID
+        idn = len(self.devices)+1
+        dev = d.HTTPDevice(idn, f"HTTP{idn}", ip)
         self.topology[idn] = []
         self.devices.append(dev)
 

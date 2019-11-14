@@ -99,10 +99,10 @@ class USBDevice(Device):
             f"gnome-terminal -e 'python -m serial.tools.miniterm /dev/ttyUSB{self.id} 115200'"
         )
 
+# TODO: Decouple the device logic from the manager
 
 class TCPDevice(Device):
     """ Implementation of the Device class for TCP controlled platforms. """
-    #todo: Afegir flag de connexió 
     def __init__(self, id, name, obj, host, port):
         super().__init__(-1, name, obj)
         self.host = host
@@ -121,6 +121,23 @@ class TCPDevice(Device):
     def read_answer(self):
         pass
 
+class HTTPDevice(Device):
+    """ Implementation of the Device class for HTTP controlled platforms. """
+    def __init__(self, id, name, ip):
+        super().__init__(id, name, None)
+        self.raddr = ip
+
+    def __str__(self):
+        return str(vars(self))
+
+    def __repr__(self):
+        return str(vars(self))
+
+    def send_command(self, command):
+        pass
+
+    def read_answer(self):
+        pass
 
 class MockDevice(Device):
     """ Implementation of the Device class for development purposes. """

@@ -3,6 +3,9 @@ import time
 
 log = logging.getLogger(__name__)
 
+# TODO: Implement function to get state from the devices. i.e. parsing the router and child functions
+# TODO: Think about other common use functions and implement them 
+
 def initialize_commissioner(device):
     """ Initializes the board with the necessary commands """
 

@@ -6,9 +6,7 @@ if len(sys.argv)>1:
   mes = sys.argv[1]
 else:
   mes = "example"
-
-
-
+  
 def run():
   while(True):
     response = str(sock.recv(2048), 'ascii')
@@ -20,7 +18,6 @@ def send(command):
 
 if __name__ == '__main__':
   sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-#todo: Posar ID
   sock.connect(('localhost', 12342))
   sock.sendall(bytes(mes, 'ascii'))
 

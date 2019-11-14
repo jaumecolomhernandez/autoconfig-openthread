@@ -14,13 +14,16 @@ from flask_server.main import app as FlaskServer
 TEST ="hOLA"
 
 class TCPServer:
-    def __init__(self, host, port):
+    def __init__(self, host, port, paemanager, log):
         """ """
         self.host = host
         self.port = port       
         self.ID = -1
         self.connection = False
         self.server_socket = self.init_server(host, port)
+
+        self.manager = paemanager
+        self.log = log
     
     def init_server(self, host, port):
         """ """
@@ -50,7 +53,7 @@ class TCPServer:
         """ """
         while 1:
             # Gets current sockets in the system
-            open_sockets = PAEManager.get_sockets()
+            open_sockets = self.manager.get_sockets()
             open_sockets.append(self.server_socket)
             
             # Select loop for polling the different sockets For more info ->
@@ -62,49 +65,25 @@ class TCPServer:
                 if(sock == self.server_socket):
                     
                     client_sock, client_addr = self.server_socket.accept() 
-                    # Creates new device in the PAEManager
-                    PAEManager.add_TCPDevice(client_sock, client_addr[0], client_addr[1])
+                    # Creates new device in the self.manager
+                    self.manager.add_TCPDevice(client_sock, client_addr[0], client_addr[1])
+                    # todo: Ficar gestio de dispositius connectats, 
 
-                    log.info(f"Adding new device {client_addr} to PAEManager")
+                    self.log.info(f"Adding new device {client_addr} to self.manager")
                     client_sock.send(f"Socket {client_addr} added to the server".encode("ascii"))
                     
                 # If not, it is an active device
                 else:
                     message = self.receive_message(sock)
+                    # TODO: Here there is a critical bug. When disconecting a unix client via a ctrl-c
+                    # the getpeername() function returns error after a few empty responses, thus 
+                    # breaking the app. This needs to be fixed 
                     add = sock.getpeername()
                     if len(message) == 0:
                         # Case null error
-                        PAEManager.handle_request(message, add)
+                        self.manager.handle_request(message, add)
                     else:
-                        log.info(f"Received: {message} from {add}")
-                        PAEManager.handle_request(message, add)
+                        self.log.info(f"Received: {message} from {add}")
+                        #todo: canviar lu de la ID per aqui. Mirar com canviar el device des d'aqui
+                        self.manager.handle_request(message, add)
 
-                    
-                    
-#        
-if __name__ == "__main__":
-
-    file = open("debug_config.yaml", 'r') 
-    config = yaml.safe_load(file)
-
-    # Main object
-    PAEManager = DeviceManager(config)
-
-    # Server object/s
-    internal_server = TCPServer('localhost', 12342)
-    external_server = FlaskServer  # TODO: Attach HTPP server (maybe flask)
-
-    # Get a logger
-    log = logging.getLogger("Server")
-
-    log.info("LOG STARTED")
-
-
-    # And start server
-    iserver_thread = threading.Thread(target=internal_server.run_forever)
-    iserver_thread.start()
-
-    eserver_thread = threading.Thread(target=external_server.run)
-    eserver_thread.start()
-    #external_server.run(debug=False)
-    #print("This thing keeps working")
