@@ -71,6 +71,7 @@ class TCPServer:
                 # If not, it is an active device
                 else:
                     message = self.receive_message(sock)
+                    log.info("Missatge rebut")
                     add = sock.getpeername()
                     if len(message) == 0:
                         # Case null error
