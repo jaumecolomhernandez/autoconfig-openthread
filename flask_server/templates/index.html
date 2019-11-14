@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html>
+
+  <head>
+    <meta charset="utf-8">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.6/css/bootstrap.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-table/1.10.1/bootstrap-table.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/2.2.4/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.6/js/bootstrap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-table/1.10.1/bootstrap-table.min.js"></script>
+    
+  </head>
+    
+  <div class = "page-header">
+      <h1 class="text-center">
+         Device List
+      </h1>
+   </div>
+
+  <body>
+    <div class="container">
+      <div align="right">
+        <input class="form-control" id="myInput" style="width:400px" type="text" placeholder="Search..">
+      </div>
+      <div name="table" style="margin-top: 10px">
+      <table class="table" data-search="true">
+        <thead>
+          <tr>
+            <th data-field="id" data-sortable="true">ID</th>
+            <th data-field="name" data-sortable="true">Name</th>
+            <th data-field="host" data-sortable="true">Host</th>
+            <th data-field="port" data-sortable="true">Port</th>
+          </tr>
+        </thead>
+        <tbody id="myTable">
+          {% for d in devices %}    
+          <tr class="data-row accordion-toggle" data-toggle="collapse" data-target="#collapse{{ loop.index }}">
+              <td>{{ d.id }}</td>
+              <td>{{ d.name }}</td>
+              <td>{{ loop.index }}</td>
+              <td>test</td>
+          </tr>
+          <tr>
+              <td></td>
+              <td colspan="3">
+                <div id="collapse{{ loop.index }}" class="collapse out">
+                  - Details 1  <br /> 
+                  - Details 2 <br /> 
+                  <input class="form-control" style="width:500px;display:inline-block;" type="text" placeholder="Type a command">
+                  <input type="submit" class="btn btn-primary" style="margin-left:20px;" value="Send">
+                </div>
+              </td>
+            </tr>
+          {% endfor %}
+      </tbody>
+      </table>
+      </div>
+    </div>
+    
+    <script>
+        $(document).ready(function(){
+          $("#myInput").on("keyup", function() {
+            var value = $(this).val().toLowerCase();
+            
+            $("#myTable .data-row").filter(function() {
+              $(this).toggle($(this).text().toLowerCase().indexOf(value) > -1)
+            });
+          });
+        });
+    </script> 
+        
+    </body>
+</html>

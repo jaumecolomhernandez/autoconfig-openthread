@@ -1,4 +1,4 @@
-from flask import Flask, render_template, Blueprint
+from flask import Flask, render_template, Blueprint, current_app
 from flask_login import login_required
 
 routes_bp = Blueprint('routes', __name__, template_folder='templates')
@@ -7,9 +7,7 @@ routes_bp = Blueprint('routes', __name__, template_folder='templates')
 @routes_bp.route("/")
 @login_required
 def home():
-	from tcp_customserver import TEST
-	print(TEST)
-	return render_template('button.html')
+	return render_template('index.html', devices=current_app.manager.devices)
 
 
 @routes_bp.route("/button1", methods=['GET', 'POST'])

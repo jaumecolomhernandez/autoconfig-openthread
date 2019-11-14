@@ -99,8 +99,8 @@ class DeviceManager(object):
             
 
     def add_TCPDevice(self, socket, host, port):
-        """ """
-        #self.ID-> Afegir ID
+        """ """ 
+        #self.ID-> Afegir IDtest
         idn = len(self.devices)+1
         dev = d.TCPDevice(idn, f"TCP{idn}", socket, host, port)
         self.topology[idn] = []
