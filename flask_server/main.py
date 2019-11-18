@@ -66,9 +66,9 @@ def login():
 @app.route("/logout")
 @login_required
 def logout():
-    logout_user()
+	logout_user()
 	#TODO: RETURN A HTML
-    return Response('<p>Logged out</p>')
+	return render_template('logout.html')
 
 @login_manager.user_loader
 def load_user(userid):

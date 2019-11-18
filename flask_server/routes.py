@@ -1,5 +1,5 @@
 from flask import Flask, render_template, Blueprint, current_app
-from flask_login import login_required
+from flask_login import login_required, current_user
 
 routes_bp = Blueprint('routes', __name__, template_folder='templates')
 # TODO: Create complete UI using Bootstrap and Jquery
@@ -7,7 +7,7 @@ routes_bp = Blueprint('routes', __name__, template_folder='templates')
 @routes_bp.route("/")
 @login_required
 def home():
-	return render_template('index.html', devices=current_app.manager.devices)
+	return render_template('index.html', devices=current_app.manager.devices, user=current_user)
 
 
 @routes_bp.route("/button1", methods=['GET', 'POST'])

@@ -3,6 +3,7 @@
 
   <head>
     <meta charset="utf-8">
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/index.css') }}">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.6/css/bootstrap.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-table/1.10.1/bootstrap-table.min.css">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/2.2.4/jquery.min.js"></script>
@@ -10,17 +11,51 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-table/1.10.1/bootstrap-table.min.js"></script>
     
   </head>
-    
-  <div class = "page-header">
+
+  <body>
+
+    <script type=text/javascript>
+      $(function(){
+        $('#button_refresh').click(function(){
+          $("html").load("/");
+        });
+      });
+    </script>
+
+    <script type=text/javascript>
+    $(function(){
+      $('#button_logout').click(function(){
+        $("html").load("/logout");
+      });
+    });
+  </script>
+
+    <div class="text-right" style="margin-right:30px;padding-top:20px;">
+        <p style="padding:10px; display:inline-block">Username:</p>
+        <p style="display:inline-block; margin-right: 5px;">{{ user }}</p> 
+        <button class="btn btn-primary" data-toggle="modal" data-target=".bs-example-modal-sm">Logout</button>
+        <div class="modal bs-example-modal-sm" tabindex="-1" role="dialog" aria-hidden="true">
+          <div class="modal-dialog modal-sm">
+            <div class="modal-content">
+              <div class="modal-body text-center"><i class="fa fa-question-circle"></i> Are you sure you want to log out?</div>
+              <div class="modal-footer">
+                    <button class='btn btn-primary' style="margin-right: 100px;"id='button_logout'>Logout</button>
+              </div>
+            </div>
+          </div>
+        </div>
+    </div>
+
+   <div class = "page-header">
       <h1 class="text-center">
          Device List
       </h1>
    </div>
-
-  <body>
+    
     <div class="container">
       <div align="right">
-        <input class="form-control" id="myInput" style="width:400px" type="text" placeholder="Search..">
+        <button class="btn btn-primary" id="button_refresh" style="margin-right:600px;display:inline-block;">Refresh</button>
+        <input class="form-control" id="myInput" style="width:400px;display:inline-block;" type="text" placeholder="Search..">
       </div>
       <div name="table" style="margin-top: 10px">
       <table class="table" data-search="true">
@@ -61,7 +96,7 @@
         $(document).ready(function(){
           $("#myInput").on("keyup", function() {
             var value = $(this).val().toLowerCase();
-            
+            $('.collapse').collapse('hide')
             $("#myTable .data-row").filter(function() {
               $(this).toggle($(this).text().toLowerCase().indexOf(value) > -1)
             });
