@@ -9,7 +9,7 @@ class User(UserMixin):
         self.password = self.name + "_secret"
         
     def __repr__(self):
-        return "%d/%s/%s" % (self.id, self.name, self.password)
+        return "%s" % self.name
 
 
 

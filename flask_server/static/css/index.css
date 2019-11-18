@@ -1,0 +1,25 @@
+thead {
+    display: table-header-group;
+    vertical-align: middle;
+    border-color: inherit;
+    background: #456;
+    color: white;
+}
+
+
+td:nth-child(1) {  
+    background:rgb(51, 122, 183);
+    font-weight: bold;
+    color: white;
+    width:100px;
+}
+
+.page-header {
+    background: white;
+    text-align: center;
+    text-transform: uppercase;
+    color:#456;
+    font-weight: bold;
+    font-size: 50px;
+  }
+
