@@ -40,7 +40,7 @@ if __name__ == "__main__":
 	iserver_thread = threading.Thread(target=internal_server.run_forever)
 	iserver_thread.start()
 
-	eserver_thread = threading.Thread(target=external_server.run)
+	eserver_thread = threading.Thread(target=external_server.run, kwargs={'host' : '0.0.0.0', 'port' : 8088})
 	eserver_thread.start()
     #external_server.run(debug=False)
 
