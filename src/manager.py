@@ -59,6 +59,12 @@ class DeviceManager(object):
         dev = self.get_device(address_tuple)
         message = message.split()
 
+        if len(message) == 0:
+            dev.connexion = False
+            dev.obj = None
+            self.log.error(f"Device {address_tuple} disconnected")
+            return
+
         if not dev.connexion:
             if((len(message)>1) and (message[0] == "AUTH")):
                 antic_dev = self.getDevice(message[1])
@@ -82,11 +88,7 @@ class DeviceManager(object):
 
             return
 
-        if len(message) == 0:
-            dev.connexion = False
-            dev.obj = None
-            self.log.error(f"Device {address_tuple} disconnected")
-            return
+        
 
         if message[0] == "AUTH":
             dev.send_command("Ja estas connectat.")
