@@ -5,6 +5,8 @@ import threading
 import logging
 import sys
 
+# WARNING: THIS IS DEPRECATED CODE. MAY NOT WORK WITH CURRENT STATE
+
 class TCPServer:
     def __init__(self, host, port, paemanager, log):
         """ """

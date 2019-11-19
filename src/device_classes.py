@@ -103,10 +103,9 @@ class USBDevice(Device):
 
 class TCPDevice(Device):
     """ Implementation of the Device class for TCP controlled platforms. """
-    def __init__(self, id, name, obj, host, port):
+    def __init__(self, id, name, obj, addr):
         super().__init__(-1, name, obj)
-        self.host = host
-        self.port = port 
+        self.addr = addr 
         self.connexion = False
 
     def __str__(self):
@@ -123,10 +122,9 @@ class TCPDevice(Device):
 
 class UDPDevice(Device):
     """ Implementation of the Device class for TCP controlled platforms. """
-    def __init__(self, id, name, obj, host, port):
+    def __init__(self, id, name, obj, addr):
         super().__init__(-1, name, obj)
-        self.host = host
-        self.port = port 
+        self.addr = addr
         self.connexion = False
 
     def __str__(self):
