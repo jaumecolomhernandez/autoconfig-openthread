@@ -54,7 +54,58 @@ class DeviceManager(object):
         return None
 
     
-    def handle_request(self, message, address_tuple):
+    def UDPhandle_request(self, sock, message, address_tuple):
+
+        dev = self.get_device(address_tuple)
+        message = message.decode('ascii').split()
+
+        if not dev:
+            self.add_TCPDevice(sock, address_tuple[0], address_tuple[1])
+            print(f"Added device to list {address_tuple}")
+            return "OK"
+
+        if len(message) == 0:
+            dev.connexion = False
+            dev.obj = None
+            self.log.error(f"Device {address_tuple} disconnected")
+            return "OK"
+
+        if not dev.connexion:
+            if((len(message)>1) and (message[0] == "AUTH")):
+                antic_dev = self.getDevice(message[1])
+                if(antic_dev): #Dispositiu amb aquesta ID existeix, substituim el antic dev amb el nou.
+                    antic_dev.host = dev.host
+                    antic_dev.port = dev.port
+                    antic_dev.obj = dev.obj
+                    antic_dev.connexion = True
+                    self.devices.remove(dev)
+                    self.log.info(f"Dispositiu [Tuple{address_tuple} ID:{dev.id}] reconnectat correctament.")
+                    #dev.send_command("Dispositiu reconnectat correctament.\r\n")
+                    return "Dispositiu reconnectat correctament.\r\n"
+                else: #Nou dispositiu, posem la ID i connexion = True
+                    dev.id = message[1]
+                    dev.connexion = True
+                    self.log.info(f"Nou dispositiu [Tuple{address_tuple} ID:{dev.id}] connectat correctament.")
+                    # dev.send_command("Nou dispositiu connectat correctament.\r\n")
+                    return "Nou dispositiu connectat correctament.\r\n"
+
+            else:
+                self.log.error(f"ID del device {address_tuple} no enviat correctament")
+                
+                # dev.send_command("Comanda no valida: ID mal escrita.")
+
+        if message[0] == "AUTH":
+            #dev.send_command("Ja estas connectat.")
+            return "Already connected!"
+        elif message[0] == "VERSION":
+            pass
+        elif message[0] == "ORDER2":
+            pass
+        else:
+            self.log.error(f"Instruction unknown ({message})")
+            return "NOT OK"
+
+    def TCPhandle_request(self, message, address_tuple):
 
         dev = self.get_device(address_tuple)
         message = message.split()
@@ -87,17 +138,18 @@ class DeviceManager(object):
                 dev.send_command("Comanda no valida: ID mal escrita.")
 
             return
-
         
 
         if message[0] == "AUTH":
-            dev.send_command("Ja estas connectat.")
+            #dev.send_command("Ja estas connectat.")
+            return "Already connected!"
         elif message[0] == "VERSION":
             pass
         elif message[0] == "ORDER2":
             pass
         else:
             self.log.error(f"Instruction unknown ({message})")
+            return "NOT OK"
             
 
     def add_TCPDevice(self, socket, host, port):

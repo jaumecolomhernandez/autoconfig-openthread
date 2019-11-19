@@ -57,18 +57,12 @@ class UDPServer:
             read_sockets, _, _ = select.select(open_sockets, [], [])
 
             for sock in read_sockets: 
-
                 message, addr = self.receive_message(sock)
                 log.info(f"Missatge rebut -> {message} {addr}")
-                # if len(message) == 0:
-                #    # Case null error
-                #     #PAEManager.handle_request(message, add)
-                #     pass
-                
-
-                # TODO: Complete the UDP server
-                #log.info(f"Received: {message} from {str(sock)}")
-                #PAEManager.handle_request(message, add)
+                    
+                message_r = PAEManager.UDPhandle_request(sock, message, addr)
+                if message:
+                    self.server_socket.sendto(message_r.encode(), addr) 
 
                     
                     
