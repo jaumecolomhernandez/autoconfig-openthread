@@ -103,14 +103,13 @@ class DeviceManager(object):
 
         # First time connecting from this address_tuple
         if not dev:
-            self.add_TCPDevice(None, address_tuple)
+            self.add_UDPDevice(None, address_tuple)
             print(f"Added device to list {address_tuple}")
             return "OK"
 
         # If it is not the first time check if reconnecting
         if not dev.connexion:
             return self.authorize(dev, message, address_tuple)
-
 
         # TODO: Implement live check
 
@@ -137,28 +136,9 @@ class DeviceManager(object):
             return
 
         if not dev.connexion:
-            if((len(message)>1) and (message[0] == "AUTH")):
-                antic_dev = self.getDevice(message[1])
-                if(antic_dev): #Dispositiu amb aquesta ID existeix, substituim el antic dev amb el nou.
-                    antic_dev.host = dev.host
-                    antic_dev.port = dev.port
-                    antic_dev.obj = dev.obj
-                    antic_dev.connexion = True
-                    self.devices.remove(dev)
-                    self.log.info(f"Dispositiu [Tuple{address_tuple} ID:{dev.id}] reconnectat correctament.")
-                    dev.send_command("Dispositiu reconnectat correctament.\r\n")
-                else: #Nou dispositiu, posem la ID i connexion = True
-                    dev.id = message[1]
-                    dev.connexion = True
-                    self.log.info(f"Nou dispositiu [Tuple{address_tuple} ID:{dev.id}] connectat correctament.")
-                    dev.send_command("Nou dispositiu connectat correctament.\r\n")
-
-            else:
-                self.log.error(f"ID del device {address_tuple} no enviat correctament")
-                dev.send_command("Comanda no valida: ID mal escrita.")
-
+            mes = self.authorize(dev, message, address_tuple)
+            dev.send_command(mes)
             return
-        
 
         if message[0] == "AUTH":
             #dev.send_command("Ja estas connectat.")
@@ -177,6 +157,14 @@ class DeviceManager(object):
         #self.ID-> Afegir IDtest
         idn = len(self.devices)+1
         dev = d.TCPDevice(idn, f"TCP{idn}", socket, addr)
+        self.topology[idn] = []
+        self.devices.append(dev)
+    
+    def add_UDPDevice(self, socket, addr):
+        """ """ 
+        #self.ID-> Afegir IDtest
+        idn = len(self.devices)+1
+        dev = d.UDPDevice(idn, f"TCP{idn}", socket, addr)
         self.topology[idn] = []
         self.devices.append(dev)
 

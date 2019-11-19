@@ -16,6 +16,8 @@ sys.path.append('networking/')
 #from src.tcp_customserver_class import TCPServer
 from networking.udp_customserver_class import UDPServer
 
+def send(number, message):
+	return exec(PAEManager.devices[number].send_command(message))
                     
 if __name__ == "__main__":
 

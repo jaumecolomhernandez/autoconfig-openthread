@@ -135,7 +135,7 @@ class UDPDevice(Device):
 
     def send_command(self, command):
         """ALL THE INTERFACING IS DONE THROUGH THE UDPSERVER"""
-        pass
+        return f"internal_server.send_message('{command}',{self.addr})"
 
     def read_answer(self):
         """ALL THE INTERFACING IS DONE THROUGH THE UDPSERVER"""
