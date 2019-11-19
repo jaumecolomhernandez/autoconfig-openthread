@@ -37,12 +37,19 @@ class UDPServer:
         """ """
         return socket_client.recvfrom(1024)
             
-    def send_message(self, sock, message):
+    def send_message(self, message, addr):
         """ """
-        return sock.send(message.encode('ascii'))
+        return self.server_socket.sendto(message.encode(), addr) 
+        
 
-    def handler(self, message, sock):
-        print(message)
+    def handler(self, message, addr):
+        self.log.info(f"Missatge rebut -> {message} {addr}")
+                    
+        message_r = self.manager.UDPhandle_request(message, addr)
+        if message_r: 
+            return message_r
+        else: 
+            return "NO ANSWER"
 
     def run_forever(self):
         """ """
@@ -56,12 +63,10 @@ class UDPServer:
             read_sockets, _, _ = select.select(open_sockets, [], [])
 
             for sock in read_sockets: 
+                # Receives message from available socket 
                 message, addr = self.receive_message(sock)
-                self.log.info(f"Missatge rebut -> {message} {addr}")
-                    
-                message_r = self.manager.UDPhandle_request(sock, message, addr)
-                if message:
-                    self.server_socket.sendto(message_r.encode(), addr) 
-
-                    
-                
+                # Handles response
+                message_r = self.handler(message, addr)
+                print(message_r)
+                # Sends response back (ALWAYS)
+                self.send_message(message_r, addr)

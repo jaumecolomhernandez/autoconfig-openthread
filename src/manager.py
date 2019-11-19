@@ -54,13 +54,13 @@ class DeviceManager(object):
         return None
 
     
-    def UDPhandle_request(self, sock, message, address_tuple):
+    def UDPhandle_request(self, message, address_tuple):
 
         dev = self.get_device(address_tuple)
         message = message.decode('ascii').split()
 
         if not dev:
-            self.add_TCPDevice(sock, address_tuple[0], address_tuple[1])
+            self.add_TCPDevice(None, address_tuple[0], address_tuple[1])
             print(f"Added device to list {address_tuple}")
             return "OK"
 
