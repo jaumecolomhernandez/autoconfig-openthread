@@ -5,13 +5,7 @@ import threading
 import logging
 import sys
 
-sys.path.append('src/')
-from src.manager import DeviceManager
-
-sys.path.append('flask_server/')
-from flask_server.main import app as FlaskServer
-
-TEST ="hOLA"
+# WARNING: THIS IS DEPRECATED CODE. MAY NOT WORK WITH CURRENT STATE
 
 class TCPServer:
     def __init__(self, host, port, paemanager, log):

@@ -49,12 +49,82 @@ class DeviceManager(object):
 
     def get_device(self, address_tuple):
         for de in self.devices:
-            if de.host == address_tuple[0] and de.port == address_tuple[1]:
+            if de.addr == address_tuple:
                 return de
         return None
 
+    def authorize(self, dev, message, address_tuple):
+        """ Authorized new devices to the system
+            Params:
+            - dev: UDP or TCP device
+            - message: list of space separated words in of message
+            - address_tuple: tuple with host and port
+            Returns:
+            - Message to send back to the device
+        """
+
+        if len(message) != 2:
+            return "NON-AUTHORIZED: invalid order"
+        
+        if message[0] != "AUTH":
+            return "NON-AUTHORIZED: invalid order"
+
+        dev_id = message[1] # This is the id (AUTH 45)
+        old_dev = self.getDevice(dev_id)
+
+        # In case this device exists we reconnect de device, and delete the old one
+        if(old_dev): 
+            # Change parameters
+            old_dev.addr = dev.addr
+            old_dev.obj = dev.obj
+            old_dev.connexion = True
+            # Remove old device
+            self.devices.remove(dev)
+
+            # Send information along
+            self.log.info(f"Dispositiu [Tuple{address_tuple} ID:{dev.id}] reconnectat correctament.")
+            return "Dispositiu reconnectat correctament.\r\n"
+        
+        # Then it is a new device, we add it to the list
+        else: 
+            # Set parameters
+            dev.id = dev_id
+            dev.connexion = True
+
+            # Send information along
+            self.log.info(f"Nou dispositiu [Tuple{address_tuple} ID:{dev.id}] connectat correctament.")
+            return "Nou dispositiu connectat correctament.\r\n"
+
     
-    def handle_request(self, message, address_tuple):
+    def UDPhandle_request(self, message, address_tuple):
+
+        dev = self.get_device(address_tuple)
+        message = message.decode('ascii').split()
+
+        # First time connecting from this address_tuple
+        if not dev:
+            self.add_UDPDevice(None, address_tuple)
+            print(f"Added device to list {address_tuple}")
+            return "OK"
+
+        # If it is not the first time check if reconnecting
+        if not dev.connexion:
+            return self.authorize(dev, message, address_tuple)
+
+        # TODO: Implement live check
+
+        # Then standard orders
+        if message[0] == "AUTH":
+            return "Already connected!"
+        elif message[0] == "VERSION":
+            return f"You are -> {address_tuple}"
+        elif message[0] == "ORDER2":
+            pass
+        else:
+            self.log.error(f"Instruction unknown ({message})")
+            return f"Instruction unknown ({message})"
+
+    def TCPhandle_request(self, message, address_tuple):
 
         dev = self.get_device(address_tuple)
         message = message.split()
@@ -66,45 +136,35 @@ class DeviceManager(object):
             return
 
         if not dev.connexion:
-            if((len(message)>1) and (message[0] == "AUTH")):
-                antic_dev = self.getDevice(message[1])
-                if(antic_dev): #Dispositiu amb aquesta ID existeix, substituim el antic dev amb el nou.
-                    antic_dev.host = dev.host
-                    antic_dev.port = dev.port
-                    antic_dev.obj = dev.obj
-                    antic_dev.connexion = True
-                    self.devices.remove(dev)
-                    self.log.info(f"Dispositiu [Tuple{address_tuple} ID:{dev.id}] reconnectat correctament.")
-                    dev.send_command("Dispositiu reconnectat correctament.\r\n")
-                else: #Nou dispositiu, posem la ID i connexion = True
-                    dev.id = message[1]
-                    dev.connexion = True
-                    self.log.info(f"Nou dispositiu [Tuple{address_tuple} ID:{dev.id}] connectat correctament.")
-                    dev.send_command("Nou dispositiu connectat correctament.\r\n")
-
-            else:
-                self.log.error(f"ID del device {address_tuple} no enviat correctament")
-                dev.send_command("Comanda no valida: ID mal escrita.")
-
+            mes = self.authorize(dev, message, address_tuple)
+            dev.send_command(mes)
             return
 
-        
-
         if message[0] == "AUTH":
-            dev.send_command("Ja estas connectat.")
+            #dev.send_command("Ja estas connectat.")
+            return "Already connected!"
         elif message[0] == "VERSION":
             pass
         elif message[0] == "ORDER2":
             pass
         else:
             self.log.error(f"Instruction unknown ({message})")
+            return "NOT OK"
             
 
-    def add_TCPDevice(self, socket, host, port):
+    def add_TCPDevice(self, socket, addr):
         """ """ 
         #self.ID-> Afegir IDtest
         idn = len(self.devices)+1
-        dev = d.TCPDevice(idn, f"TCP{idn}", socket, host, port)
+        dev = d.TCPDevice(idn, f"TCP{idn}", socket, addr)
+        self.topology[idn] = []
+        self.devices.append(dev)
+    
+    def add_UDPDevice(self, socket, addr):
+        """ """ 
+        #self.ID-> Afegir IDtest
+        idn = len(self.devices)+1
+        dev = d.UDPDevice(idn, f"TCP{idn}", socket, addr)
         self.topology[idn] = []
         self.devices.append(dev)
 

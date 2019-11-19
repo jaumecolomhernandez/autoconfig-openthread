@@ -103,10 +103,9 @@ class USBDevice(Device):
 
 class TCPDevice(Device):
     """ Implementation of the Device class for TCP controlled platforms. """
-    def __init__(self, id, name, obj, host, port):
+    def __init__(self, id, name, obj, addr):
         super().__init__(-1, name, obj)
-        self.host = host
-        self.port = port 
+        self.addr = addr 
         self.connexion = False
 
     def __str__(self):
@@ -119,6 +118,27 @@ class TCPDevice(Device):
         return self.obj.send(command.encode('ascii'))
 
     def read_answer(self):
+        pass
+
+class UDPDevice(Device):
+    """ Implementation of the Device class for TCP controlled platforms. """
+    def __init__(self, id, name, obj, addr):
+        super().__init__(-1, name, obj)
+        self.addr = addr
+        self.connexion = False
+
+    def __str__(self):
+        return str(vars(self))
+
+    def __repr__(self):
+        return str(vars(self))
+
+    def send_command(self, command):
+        """ALL THE INTERFACING IS DONE THROUGH THE UDPSERVER"""
+        return f"internal_server.send_message('{command}',{self.addr})"
+
+    def read_answer(self):
+        """ALL THE INTERFACING IS DONE THROUGH THE UDPSERVER"""
         pass
 
 class HTTPDevice(Device):

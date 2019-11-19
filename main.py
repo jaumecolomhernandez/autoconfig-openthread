@@ -12,8 +12,12 @@ sys.path.append('flask_server/')
 from flask_server.main import app as FlaskServer
 from flask_server.main import init_app_old
 
-from src.tcp_customserver_class import TCPServer
+sys.path.append('networking/')
+#from src.tcp_customserver_class import TCPServer
+from networking.udp_customserver_class import UDPServer
 
+def send(number, message):
+	return exec(PAEManager.devices[number].send_command(message))
                     
 if __name__ == "__main__":
 
@@ -24,7 +28,7 @@ if __name__ == "__main__":
 	PAEManager = DeviceManager(config)
 
 	# Server object/s
-	internal_server = TCPServer('localhost', 12342, PAEManager, logging.getLogger("TCPServer"))
+	internal_server = UDPServer('localhost', 12342, PAEManager, logging.getLogger("UDPServer"))
 
 	external_server = FlaskServer  # TODO: Make this a class # TODO Think new way of initializing this
 	init_app_old(PAEManager, logging.getLogger("FlaskServer"))
