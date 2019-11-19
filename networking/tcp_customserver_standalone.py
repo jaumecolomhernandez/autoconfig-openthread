@@ -73,10 +73,10 @@ class TCPServer:
                     add = sock.getpeername()
                     if len(message) == 0:
                         # Case null error
-                        PAEManager.handle_request(message, add)
+                        PAEManager.TCPhandle_request(message, add)
                     else:
                         log.info(f"Received: {message} from {add}")
-                        PAEManager.handle_request(message, add)
+                        PAEManager.TCPhandle_request(message, add)
 
                     
                     
