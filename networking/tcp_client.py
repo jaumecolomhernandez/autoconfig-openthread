@@ -1,6 +1,5 @@
 import sys, socket, time
 import multiprocessing
-import signal
 
 if len(sys.argv)>1:
   mes = sys.argv[1]
