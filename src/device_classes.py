@@ -166,6 +166,12 @@ class MockDevice(Device):
     def __init__(self, id, name, obj):
         """ """
         super().__init__(id, name, obj)
+    
+    def __str__(self):
+        return str(vars(self))
+
+    def __repr__(self):
+        return str(vars(self))
 
     def send_command(self, command, back=False, ending_ar=None, timeout=None):
         """ """
