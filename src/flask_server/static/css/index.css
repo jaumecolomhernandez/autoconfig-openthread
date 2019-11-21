@@ -23,3 +23,44 @@ td:nth-child(1) {
     font-size: 50px;
   }
 
+.text-right {
+    margin-right: 30px;
+    padding-top: 20px;
+}
+
+#username_text {
+    padding:10px; 
+    display:inline-block;
+}
+
+#username_input {
+    display:inline-block; 
+    margin-right: 5px;
+}1
+
+#button_logout {
+    margin-right: 100px;
+}
+
+#button_refresh {
+    margin-right:600px;
+    display:inline-block;
+}
+
+#myInput {
+    width:400px;
+    display:inline-block;
+}
+
+#table {
+    margin-top: 10px;
+}
+
+input[id^="submit_button"] {
+    margin-left: 20px;
+}
+
+input[id^="command_box"] {
+    width:500px;
+    display:inline-block;
+}
