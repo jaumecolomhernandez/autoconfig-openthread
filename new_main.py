@@ -8,9 +8,8 @@ import sys
 sys.path.append('src/')
 from src.manager import DeviceManager
 
-def send(number, message):
-	return exec(PAEManager.devices[number].send_command(message))
-                    
+
+            
 if __name__ == "__main__":
 
 	file = open("debug_config.yaml", 'r') 

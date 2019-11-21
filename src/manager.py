@@ -92,7 +92,7 @@ class DeviceManager(object):
         if message[0] != "AUTH":
             return "NON-AUTHORIZED: invalid order"
 
-        dev_id = message[1] # This is the id (AUTH 45)
+        dev_id = int(message[1]) # This is the id (AUTH 45)
         old_dev = self.getDevice(dev_id)
 
         # In case this device exists we reconnect de device, and delete the old one
@@ -126,7 +126,9 @@ class DeviceManager(object):
 
         # First time connecting from this address_tuple
         if not dev:
-            dev = self.add_UDPDevice(None, address_tuple)
+            # OJO AQUI, FIQUEM EL SOCKET DEL SERVER A CADA DEVICE 
+            # TODO: PENSAR EN EL FUTUR SI AIXO ES LA MILLOR MANERA DE FERHO
+            dev = self.add_UDPDevice(self.internal_server.server_socket, address_tuple)
             print(f"Added device to list {address_tuple}")
             # return "OK"
 
