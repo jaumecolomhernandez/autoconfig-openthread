@@ -105,8 +105,8 @@ class DeviceManager(object):
             self.devices.remove(dev)
 
             # Send information along
-            self.log.info(f"Dispositiu [Tuple{address_tuple} ID:{dev.id}] reconnectat correctament.")
-            return "Dispositiu reconnectat correctament.\r\n"
+            self.log.info(f"Device {address_tuple} with ID: {old_dev.id} correctly reconnected")
+            return "Device authorized\r\n"
         
         # Then it is a new device, we add it to the list
         else: 
@@ -115,11 +115,12 @@ class DeviceManager(object):
             dev.connexion = True
 
             # Send information along
-            self.log.info(f"Nou dispositiu [Tuple{address_tuple} ID:{dev.id}] connectat correctament.")
-            return "Nou dispositiu connectat correctament.\r\n"
+            self.log.info(f"Device {address_tuple} with ID: {dev.id} correctly authorized")
+            return "Device authorized\r\n"
 
     
     def UDPhandle_request(self, message, address_tuple):
+        """"""
 
         dev = self.get_device(address_tuple)
         message = message.decode('ascii').split()
@@ -127,13 +128,15 @@ class DeviceManager(object):
         # First time connecting from this address_tuple
         if not dev:
             # OJO AQUI, FIQUEM EL SOCKET DEL SERVER A CADA DEVICE 
-            # TODO: PENSAR EN EL FUTUR SI AIXO ES LA MILLOR MANERA DE FERHO
+            # TODO: PENSAR EN EL FUTUR SI AIXO ES LA MILLOR MANERA DE FER-HO
             dev = self.add_UDPDevice(self.internal_server.server_socket, address_tuple)
-            print(f"Added device to list {address_tuple}")
-            # return "OK"
+            
+            self.log.info(f"Added device to list {address_tuple}")
+            
 
         # If it is not the first time check if reconnecting
         if not dev.connexion:   
+            # self.authorize handles all the logs
             return self.authorize(dev, message, address_tuple)
 
         # TODO: Implement live check
@@ -284,7 +287,7 @@ class DeviceManager(object):
         if result:
             return result
         else:
-            self.log.error('Device does not exist in the list! Check again')
+            self.log.error('Device does not exist in the list! Create new device maybe')
 
     def all_to_one(self):
         """ Creates all to one topology
