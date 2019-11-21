@@ -69,12 +69,28 @@ class DeviceManager(object):
 
         # Add handler to the logger
         log.addHandler(handler)
-
-    def get_device(self, address_tuple):
-        for de in self.devices:
-            if de.addr == address_tuple:
-                return de
-        return None
+    
+    def get_device(self, id_number=None, address_tuple=None):
+        """ Returns a device given its id 
+            Params:
+            - id_number (integer)
+            - address_tuple (tuple(integer, string))
+            Return:
+            - device (Device object)
+        """
+        # Find the device in the list
+        # (N time log) maybe use binary search if needed ?
+        if id_number:
+            result = next((dev for dev in self.devices if dev.id == id_number), None)
+        elif address_tuple:
+            result = next((dev for dev in self.devices if dev.addr == address_tuple), None)
+        else:
+            result = None
+            print("There's no argument!(get_device())")
+        # We check if it found the device, if not result will be None and
+        # will evaluate to False in the if conditional
+        print(result)
+        return result
 
     def authorize(self, dev, message, address_tuple):
         """ Authorized new devices to the system
@@ -93,7 +109,7 @@ class DeviceManager(object):
             return "NON-AUTHORIZED: invalid order"
 
         dev_id = int(message[1]) # This is the id (AUTH 45)
-        old_dev = self.getDevice(dev_id)
+        old_dev = self.get_device(id_number=dev_id)
 
         # In case this device exists we reconnect de device, and delete the old one
         if(old_dev): 
@@ -122,7 +138,7 @@ class DeviceManager(object):
     def UDPhandle_request(self, message, address_tuple):
         """"""
 
-        dev = self.get_device(address_tuple)
+        dev = self.get_device(address_tuple=address_tuple)
         message = message.decode('ascii').split()
 
         # First time connecting from this address_tuple
@@ -154,7 +170,7 @@ class DeviceManager(object):
 
     def TCPhandle_request(self, message, address_tuple):
 
-        dev = self.get_device(address_tuple)
+        dev = self.get_device(address_tuple=address_tuple)
         message = message.split()
 
         if len(message) == 0:
@@ -270,25 +286,6 @@ class DeviceManager(object):
 
     ################################################################################################
     # (TOPOLOGY RELATED FUNCTIONS)
-
-    def getDevice(self, id):
-        """ Returns a device given its id 
-            Params:
-            - id (integer)
-            Return:
-            - device (Device object)
-        """
-        # Find the device in the list
-        # (N time log) maybe use binary search if needed ?
-        result = next((dev for dev in self.devices if dev.id == id), None)
-
-        # We check if it found the device, if not result will be None and
-        # will evaluate to False in the if conditional
-        if result:
-            return result
-        else:
-            self.log.error('Device does not exist in the list! Create new device maybe')
-
     def all_to_one(self):
         """ Creates all to one topology
             Returns:
@@ -335,11 +332,11 @@ class DeviceManager(object):
         # it is needed to get the Device object
         for key, values in self.topology.items():
             # Get device by id
-            joiner = self.getDevice(id=key)
+            joiner = self.get_device(id_number=key)
 
             for device_id in values:
                 # Get device by id
-                commissioner = self.getDevice(id=device_id)
+                commissioner = self.get_device(id_number=device_id)
 
                 # Check that the device is initalized to work as a commissioner
                 if commissioner.isCommissioner:
@@ -388,13 +385,13 @@ class DeviceManager(object):
         G = parse_adjlist(lines, nodetype = int)
         
         # Get a dict with the labels of every node
-        labels = dict((n, self.getDevice(n-1).name) for n in G.nodes())
+        labels = dict((n, self.get_device(id_number=(n-1)).name) for n in G.nodes())
         
         # Asign a colour to each node. If is a commissioner node, blue will be assigned.
         # If is a joiner, green will be assigned
         colours=[]
         for n in G.nodes():
-            if self.getDevice(n-1).isCommissioner:
+            if self.get_device(id_number=(n-1)).isCommissioner:
                 colours.insert(n,'b')
             else:
                 colours.insert(n,'g')
