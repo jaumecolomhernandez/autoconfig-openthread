@@ -103,12 +103,12 @@ class DeviceManager(object):
 
         # First time connecting from this address_tuple
         if not dev:
-            self.add_UDPDevice(None, address_tuple)
+            dev = self.add_UDPDevice(None, address_tuple)
             print(f"Added device to list {address_tuple}")
-            return "OK"
+            # return "OK"
 
         # If it is not the first time check if reconnecting
-        if not dev.connexion:
+        if not dev.connexion:   
             return self.authorize(dev, message, address_tuple)
 
         # TODO: Implement live check
@@ -167,6 +167,7 @@ class DeviceManager(object):
         dev = d.UDPDevice(idn, f"TCP{idn}", socket, addr)
         self.topology[idn] = []
         self.devices.append(dev)
+        return dev
 
     def add_HTTPDevice(self, ip):
         """ """
