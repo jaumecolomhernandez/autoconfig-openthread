@@ -38,7 +38,7 @@ class UDPServer:
         return self.server_socket.sendto(message.encode(), addr) 
 
     def handler(self, message, addr):
-        """"""
+        """ """
 
         self.log.info(f"Received message '{message.decode()}' from {addr}")
                     

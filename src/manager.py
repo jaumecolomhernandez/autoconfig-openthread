@@ -12,7 +12,7 @@ sys.path.append('networking/')
 #from src.tcp_customserver_class import TCPServer
 from networking.udp_customserver_class import UDPServer
 
-
+import serial
 
 class DeviceManager(object):
     """ """
@@ -38,7 +38,8 @@ class DeviceManager(object):
         init_app_old(self, logging.getLogger("FlaskServer"))
 
         # TODO: (OPENTHREAD) Test the case where there is no range and transmission involves a two hop travel
-    
+        # TODO: Create distinct function to init servers maybe
+
         # And start server/s
         iserver_thread = threading.Thread(target=self.internal_server.run_forever)
         iserver_thread.start()
@@ -71,7 +72,7 @@ class DeviceManager(object):
         log.addHandler(handler)
     
     def get_device(self, id_number=None, address_tuple=None):
-        """ Returns a device given its id 
+        """ Returns a device given its id (ONLY PASS ONE PARAMETER!)
             Params:
             - id_number (integer)
             - address_tuple (tuple(integer, string))
@@ -87,9 +88,7 @@ class DeviceManager(object):
         else:
             result = None
             print("There's no argument!(get_device())")
-        # We check if it found the device, if not result will be None and
-        # will evaluate to False in the if conditional
-        print(result)
+        
         return result
 
     def authorize(self, dev, message, address_tuple):
@@ -148,8 +147,8 @@ class DeviceManager(object):
             dev = self.add_UDPDevice(self.internal_server.server_socket, address_tuple)
             
             self.log.info(f"Added device to list {address_tuple}")
+            # Here it doesn't return to allow to authorize on the first message
             
-
         # If it is not the first time check if reconnecting
         if not dev.connexion:   
             # self.authorize handles all the logs
@@ -169,7 +168,8 @@ class DeviceManager(object):
             return f"Instruction unknown ({message})"
 
     def TCPhandle_request(self, message, address_tuple):
-
+        # UNUSED FUNCTION
+        # May be shared with UDPhandle_request as they are mostly the same
         dev = self.get_device(address_tuple=address_tuple)
         message = message.split()
 
@@ -194,7 +194,8 @@ class DeviceManager(object):
         else:
             self.log.error(f"Instruction unknown ({message})")
             return "NOT OK"
-            
+
+    ##
 
     def add_TCPDevice(self, socket, addr):
         """ """ 
@@ -223,6 +224,7 @@ class DeviceManager(object):
 
     def get_sockets(self):
         """ """
+        # DEPRECATED: ONLY USED IN TCP
         return [dev.obj for dev in self.devices if dev.obj]
 
     ##############################################################################################
