@@ -1,8 +1,16 @@
 import os, re, time
-import threading, logging
+import threading, logging, sys
 
 import ot_functions as ot
 import device_classes as d
+
+sys.path.append('flask_server/')
+from flask_server.main import app as FlaskServer
+from flask_server.main import init_app_old
+
+sys.path.append('networking/')
+#from src.tcp_customserver_class import TCPServer
+from networking.udp_customserver_class import UDPServer
 
 
 
@@ -22,6 +30,21 @@ class DeviceManager(object):
         
         self.init_log(config)
         self.log = logging.getLogger("PAEManager") 
+
+        # Server object/s
+        self.internal_server = UDPServer('localhost', 12342, self, logging.getLogger("UDPServer"))
+
+        self.external_server = FlaskServer  # TODO: Make this a class # TODO Think new way of initializing this
+        init_app_old(self, logging.getLogger("FlaskServer"))
+
+        # TODO: (OPENTHREAD) Test the case where there is no range and transmission involves a two hop travel
+    
+        # And start server/s
+        iserver_thread = threading.Thread(target=self.internal_server.run_forever)
+        iserver_thread.start()
+
+        eserver_thread = threading.Thread(target=self.external_server.run, kwargs={'host' : '0.0.0.0', 'port' : 8088})
+        eserver_thread.start()
 
         if config['debug']:
             import serial
@@ -69,7 +92,7 @@ class DeviceManager(object):
         if message[0] != "AUTH":
             return "NON-AUTHORIZED: invalid order"
 
-        dev_id = message[1] # This is the id (AUTH 45)
+        dev_id = int(message[1]) # This is the id (AUTH 45)
         old_dev = self.getDevice(dev_id)
 
         # In case this device exists we reconnect de device, and delete the old one
@@ -103,7 +126,9 @@ class DeviceManager(object):
 
         # First time connecting from this address_tuple
         if not dev:
-            dev = self.add_UDPDevice(None, address_tuple)
+            # OJO AQUI, FIQUEM EL SOCKET DEL SERVER A CADA DEVICE 
+            # TODO: PENSAR EN EL FUTUR SI AIXO ES LA MILLOR MANERA DE FERHO
+            dev = self.add_UDPDevice(self.internal_server.server_socket, address_tuple)
             print(f"Added device to list {address_tuple}")
             # return "OK"
 
