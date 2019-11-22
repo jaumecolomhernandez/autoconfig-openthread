@@ -16,12 +16,31 @@ from networking.udp_customserver_class import UDPServer
 import serial
 
 class DeviceManager(object):
-    """ """
+    """ Main class for the project 
+        Contains a device list, internal state and the external interfaces.
+        It currently handles TCP, UDP, HTTP, Serial and Mock devices, all 
+        with the current model.
+        The external interfaces are encapsulated inside every object. So we can read
+        and write to every object as if were streams. For UDP and TCP there is a threaded 
+        server to receive messages.
+        Params:
+        - devices: (list) list with all devices
+        - topology: (list) adjancency list describing the last state of the mesh network (!)
+        - commissioner_id: (int) id of the commissioner device
+        - config: (dict) config dict (read from yaml)
+        - log: (obj) logger for the DeviceManager class
+        - interal_server: (obj) UDP or TCP server used to communicate with the devices
+        - external_server: (obj) Flask server - serves the webpage
+    """
     # TODO: Complete all the docstrings
     # TODO: Implement PEP8 in the most complete sense
     
     def __init__(self, config):
-        """  """
+        """ Initializes the Device Manager 
+            Creates internal objects
+            Params:
+            - config: config dict (read from yaml)
+        """
         
         self.devices = list()
         self.topology = {}
@@ -52,7 +71,10 @@ class DeviceManager(object):
             import serial
     
     def init_log(self, config):
-        """  """
+        """ Inititalizes the log
+            Params:
+            - config: config dict (read from yaml)
+        """
         # Create a custom logger, defining from which level the logger will handle errors
         log = logging.getLogger()
         log.setLevel(logging.DEBUG)
@@ -97,9 +119,9 @@ class DeviceManager(object):
             Params:
             - dev: UDP or TCP device
             - message: list of space separated words in of message
-            - address_tuple: tuple with host and port
+            - address_tuple: (tuple) tuple with host and port
             Returns:
-            - Message to send back to the device
+            - (str) Message to send back to the device
         """
 
         if len(message) != 2:
@@ -136,7 +158,17 @@ class DeviceManager(object):
 
     
     def UDPhandle_request(self, message, address_tuple):
-        """"""
+        """ Handles an UDP request 
+            Steps:
+            - Check if device exists in list
+            - Check if device is authorized
+            - Standard orders
+            Params:
+            - message: (string)
+            - address_tuple: (tuple) containing the adress and port of the connection
+            Returns:
+            - message: (string) message to return to the device (always returns)
+        """
 
         dev = self.get_device(address_tuple=address_tuple)
         message = message.decode('ascii').split()
@@ -199,7 +231,11 @@ class DeviceManager(object):
     ##
 
     def add_TCPDevice(self, socket, addr):
-        """ """ 
+        """ Creates and adds new UDPDevice 
+            Params:
+            - socket: (obj) object that allows to communicate with device
+            - addr: (tuple) tuple containing host and address
+        """ 
         #self.ID-> Afegir IDtest
         idn = len(self.devices)+1
         dev = d.TCPDevice(idn, f"TCP{idn}", socket, addr)
@@ -207,7 +243,13 @@ class DeviceManager(object):
         self.devices.append(dev)
     
     def add_UDPDevice(self, socket, addr):
-        """ """ 
+        """ Creates and adds new UDPDevice 
+            Params:
+            - socket: (obj) object that allows to communicate with device
+            - addr: (tuple) tuple containing host and address
+            Returns:
+            - dev: (UDPDevice) It is used when authorizing on the first message (UDP_handle_request)
+        """ 
         #self.ID-> Afegir IDtest
         idn = len(self.devices)+1
         dev = d.UDPDevice(idn, f"TCP{idn}", socket, addr)
@@ -216,7 +258,10 @@ class DeviceManager(object):
         return dev
 
     def add_HTTPDevice(self, ip):
-        """ """
+        """ Creates and adds new HTTPDevice
+            Params:
+            - ip: (str) ip to connect to device
+        """ 
         #self.ID-> Afegir ID
         idn = len(self.devices)+1
         dev = d.HTTPDevice(idn, f"HTTP{idn}", ip)
@@ -224,7 +269,7 @@ class DeviceManager(object):
         self.devices.append(dev)
 
     def get_sockets(self):
-        """ """
+        """ Returns list with all the sockets """
         # DEPRECATED: ONLY USED IN TCP
         return [dev.obj for dev in self.devices if dev.obj]
 
