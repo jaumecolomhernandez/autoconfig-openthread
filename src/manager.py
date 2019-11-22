@@ -183,7 +183,11 @@ class DeviceManager(object):
             # Here it doesn't return to allow to authorize on the first message
             
         # If it is not the first time check if reconnecting
-        if not dev.connexion:   
+        if not dev.connexion:
+            if message[0] == 'ACK':
+                # TODO: (PROTOCOL) Pensar flag per a veure si són dispositius autoritzats o que
+                self.log.error('Received ACK from non authorized device') 
+                return None
             # self.authorize handles all the logs
             return self.authorize(dev, message, address_tuple)
 
@@ -194,7 +198,15 @@ class DeviceManager(object):
             return "Already connected!"
         elif message[0] == "VERSION":
             return f"You are -> {address_tuple}"
-        elif message[0] == "ORDER2":
+        elif message[0] == "ACK":
+            # TODO: Create function for the ACK management
+            # TODO: Encapulate the ACK flag in the protocol
+            try:
+                popped = dev.commands.pop(0)
+                self.log.info(f"Received ACK for the order '{popped}'")
+            except:
+                self.log.error("Received ACK with empty command queue")
+            self.log.debug("This is the device's queue: " + str(dev.commands))
             pass
         else:
             self.log.error(f"Instruction unknown ({message})")

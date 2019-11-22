@@ -128,6 +128,7 @@ class UDPDevice(Device):
         super().__init__(-1, name, obj)
         self.addr = addr
         self.connexion = False
+        self.commands = []
 
     def __str__(self):
         return str(vars(self))
@@ -137,6 +138,9 @@ class UDPDevice(Device):
 
     def send_command(self, command):
         """ Sends message through the socket server """
+        # Only append if user expressed it (with 'C|')
+        if command[0:2] == 'C|':
+            self.commands.append(command)
         return self.obj.sendto(command.encode(), self.addr)
 
     def read_answer(self):

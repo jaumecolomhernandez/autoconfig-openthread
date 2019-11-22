@@ -44,7 +44,7 @@ class UDPServer:
                     
         message_r = self.manager.UDPhandle_request(message, addr)
         
-        return message_r if message_r else "NO ANSWER"
+        return message_r
         
 
     def run_forever(self):
@@ -55,5 +55,6 @@ class UDPServer:
             message, addr = self.server_socket.recvfrom(1024)
             # Handles response
             message_r = self.handler(message, addr)
-            # Sends response back (ALWAYS)
-            self.send_message(message_r, addr)
+            # Sends response back (ALWAYS ?)
+            if message_r:
+                self.send_message(message_r, addr)

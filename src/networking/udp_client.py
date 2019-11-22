@@ -10,7 +10,10 @@ def run():
   while(True):
     response = str(sock.recv(2048), 'ascii')
     print("Received: {}".format(response), end = "\n")
-    time.sleep(0.3)
+    time.sleep(0.1)
+    if response[0:2] == 'C|':
+      send("ACK")
+    time.sleep(0.1)
 
 def send(command):
   sock.sendall(bytes(command, 'ascii'))
