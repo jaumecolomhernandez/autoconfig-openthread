@@ -104,7 +104,7 @@ class DeviceManager(object):
         """
         # Find the device in the list
         # (N time log) maybe use binary search if needed ?
-        if id_number >= 0:
+        if id_number and (id_number >= 0):
             result = next((dev for dev in self.devices if dev.id == id_number), None)
         elif address_tuple:
             result = next((dev for dev in self.devices if dev.addr == address_tuple), None)
