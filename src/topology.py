@@ -32,7 +32,10 @@ def all_to_one(devices, commissioner_id):
     return adjacency_dictionary
 
 def apply_topology(manager):
-    """ Applies the topology set in self.topology to the boards connected """
+    """ Applies the topology set in manager.topology to the boards connected 
+        Params:
+        - manager: (DeviceManager) contains all the info needed to apply the state
+    """
 
     # TODO: Implement manner to check if the nodes are already connected
     
