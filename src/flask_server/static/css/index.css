@@ -64,3 +64,12 @@ input[id^="command_box"] {
     width:500px;
     display:inline-block;
 }
+
+textarea[id^="logging_area"]{
+    overflow-y: scroll;
+    height: 125px;
+    width: 100%;
+    margin-top: 20px;
+    resize: none; 
+    color: #2e2e2e;
+}

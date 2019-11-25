@@ -62,11 +62,10 @@
           <tr>
               <td></td>
               <td colspan="3">
-                <div id="collapse{{ loop.index }}" class="collapse out">
-                  - Details 1  <br /> 
-                  - Details 2 <br /> 
-                  <input class="cmd_box form-control" id="command_box{{ d.id }}" type="text" placeholder="Type a command">
+                <div id="collapse{{ loop.index }}" class="collapse out"> 
+                  <input class="cmd_box form-control" id="command_box{{ d.id }}" onkeypress="enter_handler({{ d.id }})" type="text" placeholder="Type a command">
                   <input type="submit" class="submit_btn btn btn-primary" id="submit_button{{ d.id }}" value="Send">
+                  <textarea id="logging_area{{ d.id }}" readonly> {{ mock_data }} </textarea>
                 </div>
               </td>
             </tr>
@@ -103,6 +102,24 @@
       });
     });
     </script>
+
+    <script type=text/javascript>
+      function enter_handler(device_id) {
+          var key = window.event.keyCode;
+          // If the user has pressed enter
+          if (key === 13) {
+            var cmd = document.getElementById('command_box'+device_id).value
+            $.ajax({
+                type: "POST",
+                url: '/send',
+                data: {
+                  'id' : device_id,
+                  'command' : cmd
+                }
+            });       
+          }
+      }
+    </script>    
 
     {% for d in devices %}    
     <script type=text/javascript>

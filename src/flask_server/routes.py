@@ -5,11 +5,18 @@ import logging
 routes_bp = Blueprint('routes', __name__, template_folder='templates')
 logger = logging.getLogger('flask_server')
 # TODO: Create complete UI using Bootstrap and Jquery
-
+mock_text = """> Device connected succesfully.
+> IPAddr : ffcd:1234:4321:4321:4321:4321::
+> Reading temp :  35ºC
+> Reading humidity : 85%
+> ......
+> ......
+> ......
+"""
 @routes_bp.route("/")
 @login_required
 def home():
-	return render_template('index.html', devices=current_app.manager.devices, user=current_user)
+	return render_template('index.html', devices=current_app.manager.devices, user=current_user, mock_data=mock_text)
 
 
 @routes_bp.route("/send", methods=['GET', 'POST'])
