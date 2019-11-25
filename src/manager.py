@@ -1,6 +1,7 @@
 import os, re, time
 import threading, logging, sys
 
+import topology
 import ot_functions as ot
 import device_classes as d
 
@@ -12,15 +13,34 @@ sys.path.append('networking/')
 #from src.tcp_customserver_class import TCPServer
 from networking.udp_customserver_class import UDPServer
 
-
+import serial
 
 class DeviceManager(object):
-    """ """
+    """ Main class for the project 
+        Contains a device list, internal state and the external interfaces.
+        It currently handles TCP, UDP, HTTP, Serial and Mock devices, all 
+        with the current model.
+        The external interfaces are encapsulated inside every object. So we can read
+        and write to every object as if were streams. For UDP and TCP there is a threaded 
+        server to receive messages.
+        Params:
+        - devices: (list) list with all devices
+        - topology: (list) adjancency list describing the last state of the mesh network (!)
+        - commissioner_id: (int) id of the commissioner device
+        - config: (dict) config dict (read from yaml)
+        - log: (obj) logger for the DeviceManager class
+        - interal_server: (obj) UDP or TCP server used to communicate with the devices
+        - external_server: (obj) Flask server - serves the webpage
+    """
     # TODO: Complete all the docstrings
     # TODO: Implement PEP8 in the most complete sense
     
     def __init__(self, config):
-        """  """
+        """ Initializes the Device Manager 
+            Creates internal objects
+            Params:
+            - config: config dict (read from yaml)
+        """
         
         self.devices = list()
         self.topology = {}
@@ -38,7 +58,8 @@ class DeviceManager(object):
         init_app_old(self, logging.getLogger("FlaskServer"))
 
         # TODO: (OPENTHREAD) Test the case where there is no range and transmission involves a two hop travel
-    
+        # TODO: Create distinct function to init servers maybe
+
         # And start server/s
         iserver_thread = threading.Thread(target=self.internal_server.run_forever)
         iserver_thread.start()
@@ -50,7 +71,10 @@ class DeviceManager(object):
             import serial
     
     def init_log(self, config):
-        """  """
+        """ Inititalizes the log
+            Params:
+            - config: config dict (read from yaml)
+        """
         # Create a custom logger, defining from which level the logger will handle errors
         log = logging.getLogger()
         log.setLevel(logging.DEBUG)
@@ -69,21 +93,35 @@ class DeviceManager(object):
 
         # Add handler to the logger
         log.addHandler(handler)
-
-    def get_device(self, address_tuple):
-        for de in self.devices:
-            if de.addr == address_tuple:
-                return de
-        return None
+    
+    def get_device(self, id_number=None, address_tuple=None):
+        """ Returns a device given its id (ONLY PASS ONE PARAMETER!)
+            Params:
+            - id_number (integer)
+            - address_tuple (tuple(integer, string))
+            Return:
+            - device (Device object)
+        """
+        # Find the device in the list
+        # (N time log) maybe use binary search if needed ?
+        if id_number and (id_number >= 0):
+            result = next((dev for dev in self.devices if dev.id == id_number), None)
+        elif address_tuple:
+            result = next((dev for dev in self.devices if dev.addr == address_tuple), None)
+        else:
+            result = None
+            print("There's no argument!(get_device())")
+        
+        return result
 
     def authorize(self, dev, message, address_tuple):
         """ Authorized new devices to the system
             Params:
             - dev: UDP or TCP device
             - message: list of space separated words in of message
-            - address_tuple: tuple with host and port
+            - address_tuple: (tuple) tuple with host and port
             Returns:
-            - Message to send back to the device
+            - (str) Message to send back to the device
         """
 
         if len(message) != 2:
@@ -93,7 +131,7 @@ class DeviceManager(object):
             return "NON-AUTHORIZED: invalid order"
 
         dev_id = int(message[1]) # This is the id (AUTH 45)
-        old_dev = self.getDevice(dev_id)
+        old_dev = self.get_device(id_number=dev_id)
 
         # In case this device exists we reconnect de device, and delete the old one
         if(old_dev): 
@@ -105,8 +143,8 @@ class DeviceManager(object):
             self.devices.remove(dev)
 
             # Send information along
-            self.log.info(f"Dispositiu [Tuple{address_tuple} ID:{dev.id}] reconnectat correctament.")
-            return "Dispositiu reconnectat correctament.\r\n"
+            self.log.info(f"Device {address_tuple} with ID: {old_dev.id} correctly reconnected")
+            return "Device authorized\r\n"
         
         # Then it is a new device, we add it to the list
         else: 
@@ -115,25 +153,42 @@ class DeviceManager(object):
             dev.connexion = True
 
             # Send information along
-            self.log.info(f"Nou dispositiu [Tuple{address_tuple} ID:{dev.id}] connectat correctament.")
-            return "Nou dispositiu connectat correctament.\r\n"
+            self.log.info(f"Device {address_tuple} with ID: {dev.id} correctly authorized")
+            return "Device authorized\r\n"
 
     
     def UDPhandle_request(self, message, address_tuple):
+        """ Handles an UDP request 
+            Steps:
+            - Check if device exists in list
+            - Check if device is authorized
+            - Standard orders
+            Params:
+            - message: (string)
+            - address_tuple: (tuple) containing the adress and port of the connection
+            Returns:
+            - message: (string) message to return to the device (always returns)
+        """
 
-        dev = self.get_device(address_tuple)
+        dev = self.get_device(address_tuple=address_tuple)
         message = message.decode('ascii').split()
 
         # First time connecting from this address_tuple
         if not dev:
             # OJO AQUI, FIQUEM EL SOCKET DEL SERVER A CADA DEVICE 
-            # TODO: PENSAR EN EL FUTUR SI AIXO ES LA MILLOR MANERA DE FERHO
+            # TODO: PENSAR EN EL FUTUR SI AIXO ES LA MILLOR MANERA DE FER-HO
             dev = self.add_UDPDevice(self.internal_server.server_socket, address_tuple)
-            print(f"Added device to list {address_tuple}")
-            # return "OK"
-
+            
+            self.log.info(f"Added device to list {address_tuple}")
+            # Here it doesn't return to allow to authorize on the first message
+            
         # If it is not the first time check if reconnecting
-        if not dev.connexion:   
+        if not dev.connexion:
+            if message[0] == 'ACK':
+                # TODO: (PROTOCOL) Pensar flag per a veure si són dispositius autoritzats o que
+                self.log.error('Received ACK from non authorized device') 
+                return None
+            # self.authorize handles all the logs
             return self.authorize(dev, message, address_tuple)
 
         # TODO: Implement live check
@@ -143,15 +198,24 @@ class DeviceManager(object):
             return "Already connected!"
         elif message[0] == "VERSION":
             return f"You are -> {address_tuple}"
-        elif message[0] == "ORDER2":
+        elif message[0] == "ACK":
+            # TODO: Create function for the ACK management
+            # TODO: Encapulate the ACK flag in the protocol
+            try:
+                popped = dev.commands.pop(0)
+                self.log.info(f"Received ACK for the order '{popped}'")
+            except:
+                self.log.error("Received ACK with empty command queue")
+            self.log.debug("This is the device's queue: " + str(dev.commands))
             pass
         else:
             self.log.error(f"Instruction unknown ({message})")
             return f"Instruction unknown ({message})"
 
     def TCPhandle_request(self, message, address_tuple):
-
-        dev = self.get_device(address_tuple)
+        # UNUSED FUNCTION
+        # May be shared with UDPhandle_request as they are mostly the same
+        dev = self.get_device(address_tuple=address_tuple)
         message = message.split()
 
         if len(message) == 0:
@@ -175,10 +239,15 @@ class DeviceManager(object):
         else:
             self.log.error(f"Instruction unknown ({message})")
             return "NOT OK"
-            
+
+    ##
 
     def add_TCPDevice(self, socket, addr):
-        """ """ 
+        """ Creates and adds new UDPDevice 
+            Params:
+            - socket: (obj) object that allows to communicate with device
+            - addr: (tuple) tuple containing host and address
+        """ 
         #self.ID-> Afegir IDtest
         idn = len(self.devices)+1
         dev = d.TCPDevice(idn, f"TCP{idn}", socket, addr)
@@ -186,7 +255,13 @@ class DeviceManager(object):
         self.devices.append(dev)
     
     def add_UDPDevice(self, socket, addr):
-        """ """ 
+        """ Creates and adds new UDPDevice 
+            Params:
+            - socket: (obj) object that allows to communicate with device
+            - addr: (tuple) tuple containing host and address
+            Returns:
+            - dev: (UDPDevice) It is used when authorizing on the first message (UDP_handle_request)
+        """ 
         #self.ID-> Afegir IDtest
         idn = len(self.devices)+1
         dev = d.UDPDevice(idn, f"TCP{idn}", socket, addr)
@@ -195,7 +270,10 @@ class DeviceManager(object):
         return dev
 
     def add_HTTPDevice(self, ip):
-        """ """
+        """ Creates and adds new HTTPDevice
+            Params:
+            - ip: (str) ip to connect to device
+        """ 
         #self.ID-> Afegir ID
         idn = len(self.devices)+1
         dev = d.HTTPDevice(idn, f"HTTP{idn}", ip)
@@ -203,7 +281,8 @@ class DeviceManager(object):
         self.devices.append(dev)
 
     def get_sockets(self):
-        """ """
+        """ Returns list with all the sockets """
+        # DEPRECATED: ONLY USED IN TCP
         return [dev.obj for dev in self.devices if dev.obj]
 
     ##############################################################################################
@@ -264,144 +343,4 @@ class DeviceManager(object):
     def get_HTTPDevices():
         pass
     
-
-    ################################################################################################
-    # (TOPOLOGY RELATED FUNCTIONS)
-
-    def getDevice(self, id):
-        """ Returns a device given its id 
-            Params:
-            - id (integer)
-            Return:
-            - device (Device object)
-        """
-        # Find the device in the list
-        # (N time log) maybe use binary search if needed ?
-        result = next((dev for dev in self.devices if dev.id == id), None)
-
-        # We check if it found the device, if not result will be None and
-        # will evaluate to False in the if conditional
-        if result:
-            return result
-        else:
-            self.log.error('Device does not exist in the list! Check again')
-
-    def all_to_one(self):
-        """ Creates all to one topology
-            Returns:
-            - adjacency_dict : dictionary with the pairs id:[connected_ids]
-              all the data are integers    
-        """
-        # Length check for the topology
-        if len(self.devices) < 2:
-            self.log.error('Can not create topology if < 2 devices')
-            return
-
-        # It is better to use the ids as they are integers and provide a
-        # way to decouple the data structures (by means of a join). We exclude 
-        # the commissioner from the list of ids.
-        ids = [ device.id for device in self.devices if device.id != self.commissioner_id]
-
-        # The commissioner is a defined id in the Yaml configuration
-        commissioner_id = self.commissioner_id
-
-        # Create adjacency list with all the current devices connectating
-        # to the commissioner
-        adjacency_dictionary = {idn: [commissioner_id] for idn in ids}
-
-        # we add the entry for the commissioner and it's ready
-        adjacency_dictionary[commissioner_id] = []
-
-        return adjacency_dictionary
-
-    def apply_topology(self):
-        """ Applies the topology set in self.topology to the boards connected """
-
-        # TODO: Implement manner to check if the nodes are already connected
-        
-        # Check that there's a topology set
-        if not self.topology:
-            self.log.error('There is no topology specified! Please indicate one and call the method again')
-            return
-        
-        # A list of all the threads joining the network
-        joiners=list()
-        
-        # Iterate through all the items in the adjacency dictionary, take
-        # into account that the values are the Device id, so to act on them
-        # it is needed to get the Device object
-        for key, values in self.topology.items():
-            # Get device by id
-            joiner = self.getDevice(id=key)
-
-            for device_id in values:
-                # Get device by id
-                commissioner = self.getDevice(id=device_id)
-
-                # Check that the device is initalized to work as a commissioner
-                if commissioner.isCommissioner:
-                    ot.initialize_commissioner(commissioner)
-
-                # Authenticate both devices
-                joiners.append(threading.Thread(target=ot.authenticate, args=(commissioner, joiner)))
-                joiners[-1].start()
-                # self.authenticate(commissioner, joiner)
-        
-        # Wait for all the nodes to join the network
-        [joiner.join() for joiner in joiners]
-        self.log.info('All devices connected')
-
     
-    
-    def plot_graph(self):
-        """ Plots the topology 
-            It generates an image with the networkx library, stores it
-            and opens the image.
-        """
-        log = logging.getLogger('matplotlib')
-        log.setLevel(logging.ERROR)
-        
-        # Necessary imports
-        from networkx import parse_adjlist, draw
-        from matplotlib.pyplot import figure, savefig
-
-        # Vars
-        lines = []
-        
-        # networkx needs a list with the following structure:
-        # ['1 connected nodes', '2 connected nodes', ... ]
-        # It has a string for every node containing the chronological order
-        # the connections it has.
-        # Example all to one structure:
-        # ['1 3', '2 3', '3 ']
-        # In this example the first two nodes are connected to the 
-        # third node. Note that the index starts at one
-        for key,values in self.topology.items():
-            # Generate the connections string
-            intermed = ", ".join([str(j+1) for j in values])
-            lines.append(f'{key+1} {intermed}')
-        
-        # Create networkx Graph from the adjacency list
-        G = parse_adjlist(lines, nodetype = int)
-        
-        # Get a dict with the labels of every node
-        labels = dict((n, self.getDevice(n-1).name) for n in G.nodes())
-        
-        # Asign a colour to each node. If is a commissioner node, blue will be assigned.
-        # If is a joiner, green will be assigned
-        colours=[]
-        for n in G.nodes():
-            if self.getDevice(n-1).isCommissioner:
-                colours.insert(n,'b')
-            else:
-                colours.insert(n,'g')
-        
-        # Larger figure size
-        # figure(3,figsize=(12,12))
-        
-        # Draw graph
-        draw(G, node_size=5000, with_labels=True, font_weight='bold', labels=labels, node_color=colours)
-        
-        # Export image and open with eog
-        savefig(self.config['topology']['file_name'])
-        os.system(f"eog {self.config['topology']['file_name']} &")

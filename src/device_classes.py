@@ -41,7 +41,7 @@ class USBDevice(Device):
         super().__init__(id, name, obj)
 
     def send_command(self, command, back=False, ending_ar=None, timeout=None):
-        # Sends command and reads the response
+        """ Sends command and reads the response """
         self.obj.write((command + "\n").encode())
         self.logger.info(f"Sent command: {command}")
         return self.read_answer(back, ending_ar, timeout)
@@ -50,11 +50,13 @@ class USBDevice(Device):
         """ Implementation of the read_answer function. Reads the answer and
             analyzes the response.
             Params:
-            - 
-            -
-            -
+            - back: (bool) flag to return the received strings
+            - ending_ar: (list) list containing custom endings
+            - timeout: (int) tries before receiving message. Each try is 0.5 
+            (defined in the pyserial configuration)
             Returns:
-            - 
+            (if back == True)
+            - mes: (list) list containing the received strings from the serial 
         """
 
         # Initial variables
@@ -67,7 +69,6 @@ class USBDevice(Device):
         data = ""
         # Iterate until we read the desired response
         while not (data in endings):
-        
             # Read line from the serial port
             try:
                 data = self.obj.readline().decode("ascii")
@@ -77,7 +78,6 @@ class USBDevice(Device):
 
             # Store data if needed (back flag)
             ret.append(data)
-
             # Print the received data
             print(data, end="")
 
@@ -94,7 +94,7 @@ class USBDevice(Device):
             return ret
 
     def terminal(self):
-        """"""
+        """ Opens terminal for each device """
         system(
             f"gnome-terminal -e 'python -m serial.tools.miniterm /dev/ttyUSB{self.id} 115200'"
         )
@@ -115,9 +115,11 @@ class TCPDevice(Device):
         return str(vars(self))
 
     def send_command(self, command):
+        """ Sends message through its own socket """
         return self.obj.send(command.encode('ascii'))
 
     def read_answer(self):
+        """ALL THE RECEIVING IS DONE THROUGH THE UDPSERVER"""
         pass
 
 class UDPDevice(Device):
@@ -126,6 +128,7 @@ class UDPDevice(Device):
         super().__init__(-1, name, obj)
         self.addr = addr
         self.connexion = False
+        self.commands = []
 
     def __str__(self):
         return str(vars(self))
@@ -134,12 +137,14 @@ class UDPDevice(Device):
         return str(vars(self))
 
     def send_command(self, command):
-        """ALL THE INTERFACING IS DONE THROUGH THE UDPSERVER"""
+        """ Sends message through the socket server """
+        # Only append if user expressed it (with 'C|')
+        if command[0:2] == 'C|':
+            self.commands.append(command)
         return self.obj.sendto(command.encode(), self.addr)
-        #return f"self.internal_server.send_message('{command}',{self.addr})"
 
     def read_answer(self):
-        """ALL THE INTERFACING IS DONE THROUGH THE UDPSERVER"""
+        """ALL THE RECEIVING IS DONE THROUGH THE UDPSERVER"""
         pass
 
 class HTTPDevice(Device):
@@ -166,9 +171,15 @@ class MockDevice(Device):
     def __init__(self, id, name, obj):
         """ """
         super().__init__(id, name, obj)
+    
+    def __str__(self):
+        return str(vars(self))
+
+    def __repr__(self):
+        return str(vars(self))
 
     def send_command(self, command, back=False, ending_ar=None, timeout=None):
-        """ """
+        """ Dumb implementation of Mock device """
         self.logger.info(f"Sent command: {command}")
         # TODO: complete the data structures to closely relate the real ones
         # TODO: add random delays to better simulate a real device
@@ -179,9 +190,9 @@ class MockDevice(Device):
         pass
 
     def read_answer(self, back=False, ending_ar=None, timeout=None):
-        """ """
+        """ No implementation """
         pass
 
     def terminal(self):
-        """ """
+        """ No implementation """
         self.logger.warning(f"There's no terminal for {self.name} device.")

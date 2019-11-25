@@ -4,6 +4,7 @@ import logging
 import sys
 
 sys.path.append('src/')
+import src.topology as topo
 import src.ot_functions as ot
 from src.manager import DeviceManager
 
@@ -35,8 +36,7 @@ if __name__ == "__main__":
     PAEManager.devices = devices
 
     # Set topology
-    top = PAEManager.all_to_one()
-    PAEManager.topology = top
+    PAEManager.topology = topo.all_to_one(devices, config['device']['commissioner_device_id'])
 
     # Factory reset the boards
     if config['threading']:
@@ -54,11 +54,11 @@ if __name__ == "__main__":
 
     # Print the topology
     if config['topology']['plot']:
-        PAEManager.plot_graph()
+        topo.plot_graph(PAEManager)
     
     # Create network
     # TODO: Redo the apply_topology function bc no longer ok
-    PAEManager.apply_topology()
+    topo.apply_topology(PAEManager)
     
     # Open UDP and connect all the boards
     if config['threading']:

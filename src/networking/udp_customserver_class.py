@@ -32,41 +32,29 @@ class UDPServer:
         #server.listen(10)  
 
         return server
-
-    def receive_message(self, socket_client):
-        """ """
-        return socket_client.recvfrom(1024)
-            
+        
     def send_message(self, message, addr):
         """ """
         return self.server_socket.sendto(message.encode(), addr) 
-        
 
     def handler(self, message, addr):
-        self.log.info(f"Missatge rebut -> {message} {addr}")
+        """ """
+
+        self.log.info(f"Received message '{message.decode()}' from {addr}")
                     
         message_r = self.manager.UDPhandle_request(message, addr)
-        if message_r: 
-            return message_r
-        else: 
-            return "NO ANSWER"
+        
+        return message_r
+        
 
     def run_forever(self):
         """ """
-        while 1:
-            # Gets current sockets in the system
-            open_sockets = self.manager.get_sockets()
-            open_sockets.append(self.server_socket)
-            
-            # Select loop for polling the different sockets For more info ->
-            # https://docs.python.org/3.8/library/select.html
-            read_sockets, _, _ = select.select(open_sockets, [], [])
 
-            for sock in read_sockets: 
-                # Receives message from available socket 
-                message, addr = self.receive_message(sock)
-                # Handles response
-                message_r = self.handler(message, addr)
-                print(message_r)
-                # Sends response back (ALWAYS)
+        while True:
+            # Receives message from available socket 
+            message, addr = self.server_socket.recvfrom(1024)
+            # Handles response
+            message_r = self.handler(message, addr)
+            # Sends response back (ALWAYS ?)
+            if message_r:
                 self.send_message(message_r, addr)

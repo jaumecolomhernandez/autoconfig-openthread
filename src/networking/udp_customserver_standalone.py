@@ -58,7 +58,7 @@ class UDPServer:
 
             for sock in read_sockets: 
                 message, addr = self.receive_message(sock)
-                log.info(f"Missatge rebut -> {message} {addr}")
+                log.info(f"Missatge rebut -> {message} from {addr}")
                     
                 message_r = PAEManager.UDPhandle_request(sock, message, addr)
                 if message:
