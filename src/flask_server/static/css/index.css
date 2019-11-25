@@ -66,7 +66,6 @@ input[id^="command_box"] {
     display:inline-block;
 }
 
-<<<<<<< Updated upstream
 textarea[id^="logging_area"]{
     overflow-y: scroll;
     height: 125px;
@@ -74,7 +73,8 @@ textarea[id^="logging_area"]{
     margin-top: 20px;
     resize: none; 
     color: #2e2e2e;
-=======
+}
+
 #cmd_status {
     pointer-events: none;
     background-color: orange;
@@ -84,5 +84,4 @@ textarea[id^="logging_area"]{
 
 .cmd_sent {
     visibility: visible;
->>>>>>> Stashed changes
 }
