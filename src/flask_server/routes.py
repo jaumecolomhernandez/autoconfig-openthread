@@ -3,7 +3,7 @@ from flask_login import login_required, current_user
 import logging
 
 routes_bp = Blueprint('routes', __name__, template_folder='templates')
-log = logging.getLogger('flask_routes')
+logger = logging.getLogger('flask_server')
 # TODO: Create complete UI using Bootstrap and Jquery
 
 @routes_bp.route("/")
@@ -19,7 +19,7 @@ def send_cmd():
 	# TODO: Show some message in the UI confirming the sending of the message
 	# TODO: Show pseudoCLI to see the response
 	current_app.manager.get_device(id_number=int(request.form['id'])).send_command(request.form['command'])
-	log.info(f"Sent message: '{request.form['command']}' to device with id: {request.form['id']}")
+	logger.info(f"Sent message: '{request.form['command']}' to device with id: {request.form['id']}")
 	return render_template('index.html', devices=current_app.manager.devices, user=current_user)
 
 

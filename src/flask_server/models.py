@@ -1,7 +1,6 @@
 from flask import Flask
 from flask_login import LoginManager, UserMixin, login_required
 
-
 class User(UserMixin):
     def __init__(self, id):
         self.id = id

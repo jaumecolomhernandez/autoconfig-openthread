@@ -2,11 +2,19 @@ import sys
 import os
 from flask import Flask, render_template, request, Response, abort, redirect, g
 from flask_login import LoginManager, UserMixin, \
-                                login_required, login_user, logout_user 
+                                login_required, login_user, logout_user, current_user
 from .errors import errors_bp
 from .routes import routes_bp
 from .api import api_bp
 from .models import User
+import logging
+
+logger = logging.getLogger('flask_server')
+logger.setLevel(logging.INFO)
+fm_handler = logging.StreamHandler()
+format = logging.Formatter('[FLASK_SERVER] %(asctime)s %(message)s')
+fm_handler.setFormatter(format)
+logger.addHandler(fm_handler)
 
 app = Flask(__name__)
 
@@ -32,6 +40,7 @@ def init_app_old(manager, log):
 		permetin fer aixo (estic segur que no som els primers ens trobar-nos
 		amb aquesta barrera)
 	"""
+	logger.info('Flask app object initialized.')
 	app.manager = manager
 	app.log = log
 	app.test = "testing"
@@ -56,9 +65,10 @@ def login():
 			id = username.split('user')[1]
 			user = User(id)
 			login_user(user)
+			logger.info(f'User : {user}, logged in succesfully.')
 			return redirect(request.args.get("next"))
 		else:
-			return render_template('login.html', err="Wrong user/pw combination. Try again!")
+			abort(401)
 	else:
 		return render_template('login.html')
 
@@ -66,6 +76,7 @@ def login():
 @app.route("/logout")
 @login_required
 def logout():
+	logger.info(f'User : {current_user}, logged out succesfully.')
 	logout_user()
 	#TODO: RETURN A HTML
 	return render_template('logout.html')
