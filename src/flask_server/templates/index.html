@@ -65,8 +65,8 @@
                 <div id="collapse{{ loop.index }}" class="collapse out"> 
                   <input class="cmd_box form-control" id="command_box{{ d.id }}" onkeypress="enter_handler({{ d.id }})" type="text" placeholder="Type a command">
                   <input type="submit" class="submit_btn btn btn-primary" id="submit_button{{ d.id }}" value="Send">
-                  <textarea id="logging_area{{ d.id }}" readonly> {{ mock_data }} </textarea>
                   <button class="btn btn-primary" id="cmd_status">Command sent, waiting for ACK...</button>
+                  <textarea id="logging_area{{ d.id }}" readonly> {{ mock_data }} </textarea>
                 </div>
               </td>
             </tr>
