@@ -36,7 +36,7 @@ td:nth-child(1) {
 #username_input {
     display:inline-block; 
     margin-right: 5px;
-}1
+}
 
 #button_logout {
     margin-right: 100px;
@@ -45,6 +45,7 @@ td:nth-child(1) {
 #button_refresh {
     margin-right:600px;
     display:inline-block;
+    
 }
 
 #myInput {
@@ -65,6 +66,7 @@ input[id^="command_box"] {
     display:inline-block;
 }
 
+<<<<<<< Updated upstream
 textarea[id^="logging_area"]{
     overflow-y: scroll;
     height: 125px;
@@ -72,4 +74,15 @@ textarea[id^="logging_area"]{
     margin-top: 20px;
     resize: none; 
     color: #2e2e2e;
+=======
+#cmd_status {
+    pointer-events: none;
+    background-color: orange;
+    visibility: hidden;
+    margin-left: 20px;
+}
+
+.cmd_sent {
+    visibility: visible;
+>>>>>>> Stashed changes
 }
