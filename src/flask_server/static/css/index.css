@@ -1,3 +1,23 @@
+body {
+  background-color: #fcfcfc;
+ background-image: url("../img/part-bg.png");
+}
+
+#main-section {
+    overflow: hidden;
+}
+
+#particles-js {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    background-repeat: no-repeat;
+    background-size: cover;
+    background-position: 50% 50%;
+    opacity: 0.48;
+    z-index:-1;
+}
+
 thead {
     display: table-header-group;
     vertical-align: middle;
@@ -15,12 +35,11 @@ td:nth-child(1) {
 }
 
 .page-header {
-    background: white;
     text-align: center;
     text-transform: uppercase;
-    color:#456;
+    color: #2f3740;
     font-weight: bold;
-    font-size: 50px;
+    font-size: 40px;
   }
 
 .text-right {
@@ -54,7 +73,10 @@ td:nth-child(1) {
 }
 
 #table {
-    margin-top: 10px;
+    margin-top: 30px;
+    -webkit-box-shadow: 0px 0px 13px 2px rgba(138,138,138,1);
+    -moz-box-shadow: 0px 0px 13px 2px rgba(138,138,138,1);
+    box-shadow: 0px 0px 13px 2px rgba(138,138,138,1);
 }
 
 input[id^="submit_button"] {
@@ -75,7 +97,7 @@ textarea[id^="logging_area"]{
     color: #2e2e2e;
 }
 
-#cmd_status {
+button[id^="cmd_status"]{
     pointer-events: none;
     background-color: orange;
     visibility: hidden;
@@ -84,4 +106,16 @@ textarea[id^="logging_area"]{
 
 .cmd_sent {
     visibility: visible;
+}
+
+.empty_td{
+    background-color: #6183ba !important;
+}
+
+.data_td{
+    background-color: white !important;
+}
+
+.data-row{
+    background-color: #f2f2f2;
 }

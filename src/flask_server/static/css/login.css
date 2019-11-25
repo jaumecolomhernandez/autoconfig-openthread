@@ -26,6 +26,16 @@ body {
   font-family: 'Open Sans', sans-serif;
 }
 
+canvas {
+    display:block;
+    position: fixed;
+    z-index: -10;
+}
+
+#rest{
+    position: absolute;
+    left: 40%;
+}
 .login {
   width: 400px;
   margin: 250px auto;
