@@ -52,7 +52,7 @@ class DeviceManager(object):
         self.log = logging.getLogger("PAEManager") 
 
         # Server object/s
-        self.internal_server = UDPServer('localhost', 12342, self, logging.getLogger("UDPServer"))
+        self.internal_server = UDPServer(config['server']['ip'], config['server']['port'], self, logging.getLogger("UDPServer"))
 
         self.external_server = FlaskServer  # TODO: Make this a class # TODO Think new way of initializing this
         init_app_old(self, logging.getLogger("FlaskServer"))

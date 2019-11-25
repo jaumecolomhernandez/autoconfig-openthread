@@ -22,3 +22,7 @@ topology:
 logger:
   format: '%(asctime)s|%(levelname)s|%(name)s|%(message)s'
   level: 'DEBUG'
+
+server:
+  ip: 'localhost'
+  port: 12342
