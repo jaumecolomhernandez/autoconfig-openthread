@@ -144,7 +144,7 @@ class DeviceManager(object):
 
             # Send information along
             self.log.info(f"Device {address_tuple} with ID: {old_dev.id} correctly reconnected")
-            return "Device authorized\r\n"
+            return "Device authorized"
         
         # Then it is a new device, we add it to the list
         else: 
@@ -154,7 +154,7 @@ class DeviceManager(object):
 
             # Send information along
             self.log.info(f"Device {address_tuple} with ID: {dev.id} correctly authorized")
-            return "Device authorized\r\n"
+            return "Device authorized"
 
     
     def UDPhandle_request(self, message, address_tuple):
@@ -210,7 +210,7 @@ class DeviceManager(object):
             pass
         else:
             self.log.error(f"Instruction unknown ({message})")
-            return f"Instruction unknown ({message})"
+            return '' ,f"Instruction unknown ({message})"
 
     def TCPhandle_request(self, message, address_tuple):
         # UNUSED FUNCTION

@@ -32,16 +32,22 @@ class UDPServer:
         #server.listen(10)  
 
         return server
+
         
-    def send_message(self, message, addr):
+    def send_message(self, message, addr, flags=''):
         """ """
-        return self.server_socket.sendto(message.encode(), addr) 
+        return self.server_socket.sendto(f'|{flags}|{message}|'.encode(), addr) 
 
     def handler(self, message, addr):
         """ """
 
         self.log.info(f"Received message '{message.decode()}' from {addr}")
-                    
+        
+        # TODO: Afegir que manager retorni flags també
+        # flags, message = self.manager.UDPhandle_request(message, addr)
+        # Per a que funcioni s'han de canviar tots els return de 
+        # UDP_HandleRequest de manager.py
+        # Exemple: return '', f"Instruction unknown ({message})"
         message_r = self.manager.UDPhandle_request(message, addr)
         
         return message_r

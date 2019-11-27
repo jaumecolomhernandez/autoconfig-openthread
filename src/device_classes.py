@@ -136,12 +136,12 @@ class UDPDevice(Device):
     def __repr__(self):
         return str(vars(self))
 
-    def send_command(self, command):
+    def send_command(self, command, flags=''):
         """ Sends message through the socket server """
-        # Only append if user expressed it (with 'C|')
-        if command[0:2] == 'C|':
+        # Only append if user expressed it # PROTOCOL!
+        if 'C' in flags:
             self.commands.append(command)
-        return self.obj.sendto(command.encode(), self.addr)
+        return self.obj.sendto(f'|{flags}|{command}|'.encode(), self.addr)
 
     def read_answer(self):
         """ALL THE RECEIVING IS DONE THROUGH THE UDPSERVER"""
