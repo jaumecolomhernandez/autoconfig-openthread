@@ -58,16 +58,24 @@ def init_app(manager, log):
 
 @app.route("/login", methods=["GET", "POST"])
 def login():
+	logBool = False
+	parentDir = os.path.dirname(os.path.abspath(__file__))
+	filePath = os.path.join(parentDir, 'login.txt')
 	if request.method == 'POST':
 		username = request.form['username']
-		password = request.form['password']        
-		if password == username + "_secret":
-			id = username.split('user')[1]
-			user = User(id)
-			login_user(user)
-			logger.info(f'User : {user}, logged in succesfully.')
-			return redirect(request.args.get("next"))
-		else:
+		password = request.form['password']    
+
+		with open(filePath, "r") as login:
+		    lines = login.readlines()
+
+		for line in lines:
+		    if line.strip().split(":")[0] == username and line.strip().split(":")[1] == password:
+		    	user = User(username)
+		    	login_user(user)
+		    	logger.info(f'User : {user}, logged in succesfully.')
+		    	logBool = True
+		    	return redirect(request.args.get("next"))
+		if(logBool == False):
 			abort(401)
 	else:
 		return render_template('login.html')
