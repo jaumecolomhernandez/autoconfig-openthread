@@ -13,7 +13,7 @@ sys.path.append('networking/')
 #from src.tcp_customserver_class import TCPServer
 from networking.udp_customserver_class import UDPServer
 
-import serial
+#import serial
 
 class DeviceManager(object):
     """ Main class for the project 
