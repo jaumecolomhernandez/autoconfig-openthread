@@ -22,6 +22,8 @@ class Device(ABC):
         self.logger = logging.getLogger(name)
         self.msg_hist = []
         self.msg_hist_str = "MESSAGES RECEIVED : \n"
+        self.addr_str = ''
+        self.port = ''
 
     @abstractmethod
     def send_command(self):
@@ -135,8 +137,10 @@ class UDPDevice(Device):
     def __init__(self, id, name, obj, addr):
         super().__init__(-1, name, obj)
         self.addr = addr
+        self.addr_str = addr[0]
         self.connexion = False
         self.commands = []
+        self.port = addr[1]
 
     def __str__(self):
         return str(vars(self))

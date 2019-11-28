@@ -49,7 +49,7 @@
               <tr>
                 <th data-field="id" data-sortable="true">ID</th>
                 <th data-field="name" data-sortable="true">Name</th>
-                <th data-field="host" data-sortable="true">Host</th>
+                <th data-field="addr" data-sortable="true">Addr</th>
                 <th data-field="port" data-sortable="true">Port</th>
               </tr>
             </thead>
@@ -58,8 +58,8 @@
               <tr class="data-row accordion-toggle" data-toggle="collapse" data-target="#collapse{{ loop.index }}">
                   <td>{{ d.id }}</td>
                   <td>{{ d.name }}</td>
-                  <td>{{ loop.index }}</td>
-                  <td>test</td>
+                  <td>{{ d.addr_str }}</td>
+                  <td>{{ d.port }}</td>
               </tr>
               <tr>
                   <td class="empty_td"></td>
@@ -67,7 +67,9 @@
                     <div id="collapse{{ loop.index }}" class="collapse out">
                       <input class="cmd_box form-control" id="command_box{{ d.id }}" onkeypress="enter_handler({{ d.id }})" type="text" placeholder="Type a command">
                       <input type="submit" class="submit_btn btn btn-primary" id="submit_button{{ d.id }}" value="Send">
-                      <button class="btn btn-primary" id="cmd_status{{ d.id }}">Command sent, waiting for ACK...</button>
+                      <!--<button class="btn btn-primary" id="cmd_status{{ d.id }}">Command sent, waiting for ACK...</button>-->
+                      <button class="btn btn-info" id="start{{ d.id }}">Refresh Auto</button>
+                      <button class="btn btn-danger" id="stop{{ d.id }}">Stop Auto Refresh</button>
                       <textarea id="logging_area{{ d.id }}" readonly>{{ d.msg_hist_str }} </textarea>
                     </div>
                   </td>
@@ -111,9 +113,10 @@
           var key = window.event.keyCode;
           // If the user has pressed enter
           if (key === 13) {
-            var x = document.getElementById("cmd_status"+device_id);
-            x.style.visibility = "visible";
+            //var x = document.getElementById("cmd_status"+device_id);
+            //x.style.visibility = "visible";
             var cmd = document.getElementById('command_box'+device_id).value
+            document.getElementById('command_box'+device_id).value = ""      
             $.ajax({
                 type: "POST",
                 url: '/send',
@@ -131,8 +134,9 @@
       $(function(){
         $('#submit_button{{ d.id }}').click(function(){
           var cmd = document.getElementById('command_box{{ d.id }}').value
-          var x = document.getElementById("cmd_status{{ d.id }}");
-          x.style.visibility = "visible";
+          document.getElementById('command_box{{ d.id }}').value = ""      
+          //var x = document.getElementById("cmd_status{{ d.id }}");
+          //x.style.visibility = "visible";
           $.ajax({
               type: "POST",
               url: '/send',
@@ -148,11 +152,25 @@
 
     {% for d in devices %}    
     <script>
-      var intervalID = setInterval(function(){
-        $.get( "api/get_history/{{ d.id }}", function( data ) {
-            document.getElementById('logging_area{{ d.id }}').value = data
-        });        
-      }, 1000);
+
+      var intervalID{{ d.id }} = 0
+
+      function startInterval{{ d.id }}(){
+        document.getElementById('logging_area{{ d.id }}').style['background-color'] = '#ebfaff'
+        intervalID{{ d.id }} = setInterval(function(){
+          $.get( "api/get_history/{{ d.id }}", function( data ) {
+              document.getElementById('logging_area{{ d.id }}').value = data
+          });        
+        }, 600);
+      }
+
+      function stopInterval{{ d.id }}(){
+          document.getElementById('logging_area{{ d.id }}').style['background-color'] = '#fcfcfc'
+          clearInterval(intervalID{{ d.id }}); 
+      }
+
+      $('#start{{ d.id }}').bind("click", startInterval{{ d.id }}); // use .on in jQuery 1.7+
+      $('#stop{{ d.id }}').bind("click", stopInterval{{ d.id }});
     </script>
     {% endfor %}
 
