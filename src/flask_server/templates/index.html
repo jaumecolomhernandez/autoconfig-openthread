@@ -68,7 +68,7 @@
                       <input class="cmd_box form-control" id="command_box{{ d.id }}" onkeypress="enter_handler({{ d.id }})" type="text" placeholder="Type a command">
                       <input type="submit" class="submit_btn btn btn-primary" id="submit_button{{ d.id }}" value="Send">
                       <button class="btn btn-primary" id="cmd_status{{ d.id }}">Command sent, waiting for ACK...</button>
-                      <textarea id="logging_area{{ d.id }}" readonly> {{ mock_data }} </textarea>
+                      <textarea id="logging_area{{ d.id }}" readonly>{{ d.msg_hist_str }} </textarea>
                     </div>
                   </td>
                 </tr>
@@ -145,5 +145,16 @@
       });
     </script>
     {% endfor %}
+
+    {% for d in devices %}    
+    <script>
+      var intervalID = setInterval(function(){
+        $.get( "api/get_history/{{ d.id }}", function( data ) {
+            document.getElementById('logging_area{{ d.id }}').value = data
+        });        
+      }, 1000);
+    </script>
+    {% endfor %}
+
     </body>
 </html>
