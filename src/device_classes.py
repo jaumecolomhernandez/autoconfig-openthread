@@ -1,5 +1,6 @@
 from abc import ABC, abstractmethod
 from os import system
+from datetime import datetime
 import logging
 
 class Device(ABC):
@@ -19,6 +20,10 @@ class Device(ABC):
         self.isCommissioner = False
         # Create a logger
         self.logger = logging.getLogger(name)
+        self.msg_hist = []
+        self.msg_hist_str = "MESSAGES RECEIVED : \n"
+        self.addr_str = ''
+        self.port = ''
 
     @abstractmethod
     def send_command(self):
@@ -29,6 +34,11 @@ class Device(ABC):
     def read_answer(self):
         """"""
         pass
+
+    def msg_list_to_str(self):
+        tstamp = datetime.now().strftime('%H:%M:%S.%f')[:-4]
+        s = f">> {tstamp} - {self.msg_hist[-1]} \n"  
+        self.msg_hist_str += s
 
     def reset(self):
         self.send_command
@@ -127,8 +137,10 @@ class UDPDevice(Device):
     def __init__(self, id, name, obj, addr):
         super().__init__(-1, name, obj)
         self.addr = addr
+        self.addr_str = addr[0]
         self.connexion = False
         self.commands = []
+        self.port = addr[1]
 
     def __str__(self):
         return str(vars(self))

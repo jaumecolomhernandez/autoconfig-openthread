@@ -195,6 +195,10 @@ class DeviceManager(object):
 
         # TODO: Implement live check
 
+        # Add CMD to the history
+        dev.msg_hist.append(' '.join(message))
+        dev.msg_list_to_str()
+
         # Then standard orders
         if message[0] == "AUTH":
             return "Already connected!"

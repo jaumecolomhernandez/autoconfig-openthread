@@ -49,3 +49,12 @@ def add_new_dev():
     """
     current_app.manager.add_HTTPDevice(request.remote_addr)
     return "Succesfully added a new device guys!"
+
+@api_bp.route("/api/get_history/<dev_id>", methods=['GET', 'POST'])
+def get_hist(dev_id):   
+    """ Gets the cmd history
+    """
+    print(int(dev_id))
+    print(current_app.manager.devices)
+    print(current_app.manager.get_device(id_number=int(dev_id)).msg_hist_str)
+    return current_app.manager.get_device(id_number=int(dev_id)).msg_hist_str
