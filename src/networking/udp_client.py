@@ -4,7 +4,7 @@ import multiprocessing
 if len(sys.argv)>1:
   mes = sys.argv[1]
 else:
-  mes = "example"
+  mes = "||example|"
 
 remote = '147.83.39.50'
 local = 'localhost'
@@ -23,10 +23,9 @@ def run():
     if 'C' in headers:
       print(f"Sent ACK to ({remote},12342)")
       send("ACK")
-    time.sleep(0.1)
 
-def send(command):
-  sock.sendall(bytes(command, 'ascii'))
+def send(command, flags=''):
+  sock.sendall(bytes(f'|{flags}|{command}|', 'ascii'))
 
 if __name__ == '__main__':
   sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)

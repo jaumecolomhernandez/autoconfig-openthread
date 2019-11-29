@@ -157,7 +157,7 @@ class DeviceManager(object):
             return "Device authorized"
 
     
-    def UDPhandle_request(self, message, address_tuple):
+    def UDPhandle_request(self, message, flag, address_tuple):
         """ Handles an UDP request 
             Steps:
             - Check if device exists in list
@@ -171,7 +171,9 @@ class DeviceManager(object):
         """
 
         dev = self.get_device(address_tuple=address_tuple)
-        message = message.decode('ascii').split()
+        message = message.split()
+
+        print(message)
 
         # First time connecting from this address_tuple
         if not dev:
@@ -210,7 +212,7 @@ class DeviceManager(object):
             pass
         else:
             self.log.error(f"Instruction unknown ({message})")
-            return '' ,f"Instruction unknown ({message})"
+            return f"Instruction unknown ({message})"
 
     def TCPhandle_request(self, message, address_tuple):
         # UNUSED FUNCTION
