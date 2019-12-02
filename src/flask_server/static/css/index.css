@@ -119,3 +119,22 @@ button[id^="cmd_status"]{
 .data-row{
     background-color: #f2f2f2;
 }
+
+.footer {
+    position: absolute;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    padding: 1rem;
+    text-align: center;
+  }
+
+.footer-text {
+    display:inline-block;
+    font-size:11.5px;
+    margin-left: 5px;
+}
+
+.footer-img {
+    display:inline-block;
+}
