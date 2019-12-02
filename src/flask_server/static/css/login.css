@@ -34,12 +34,32 @@ canvas {
 
 #rest{
     position: absolute;
-    left: 40%;
+    left: 0; 
+    right: 0; 
+    margin-left: auto; 
+    margin-right: auto; 
+    width: 25%; /* Need a specific value to work */
 }
+
+@media only screen and (max-width: 768px) {
+  /* For mobile phones: */
+  #rest {
+    position: absolute;
+    left: 0; 
+    right: 0; 
+    margin-left: auto; 
+    margin-right: auto; 
+    width: 70%; /* Need a specific value to work */
+    height: 20%;
+  }
+
+  .login {
+    margin-top: 100%;
+  }
+}
+
 .login {
-  width: 400px;
-  margin: 250px auto;
-  font-size: 16px;
+  margin-top: 45%;
 }
 
 /* Reset top and bottom margins from certain elements */
