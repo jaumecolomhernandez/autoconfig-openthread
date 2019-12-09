@@ -11,9 +11,9 @@ import logging
 
 logger = logging.getLogger('flask_server')
 logger.setLevel(logging.INFO)
+
 fm_handler = logging.StreamHandler()
-format = logging.Formatter('[FLASK_SERVER] %(asctime)s %(message)s')
-fm_handler.setFormatter(format)
+fm_handler.setFormatter(logging.Formatter('[FLASK_SERVER] %(asctime)s %(message)s'))
 logger.addHandler(fm_handler)
 
 app = Flask(__name__)
