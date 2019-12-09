@@ -30,6 +30,17 @@ def get_topology():
     """
     return current_app.manager.topology
 
+@api_bp.route("/api/topology_test", methods=['GET', 'POST'])
+def get_topology_test():
+    """ RETURNS TOPOLOGY OF NETWORK
+    """
+    topology = { 1 : [2,3],
+    2 : [2,3,4],
+    3 : [4],
+    4 : []
+    }
+    return topology
+
 @api_bp.route("/api/whatismyip", methods=['GET', 'POST'])
 def get_remote_ip():
     """ RETURNS IP OF REQUEST

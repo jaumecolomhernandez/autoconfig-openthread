@@ -7,6 +7,13 @@ body {
     overflow: hidden;
 }
 
+#mynetwork {
+    width: 600px;
+    height: 400px;
+    margin-left: auto;
+    margin-right:auto;
+}
+
 #particles-js {
     position: absolute;
     width: 100%;
@@ -40,6 +47,7 @@ td:nth-child(1) {
     color: #2f3740;
     font-weight: bold;
     font-size: 40px;
+    z-index: 
   }
 
 .text-right {

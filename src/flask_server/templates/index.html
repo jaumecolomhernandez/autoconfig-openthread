@@ -10,6 +10,7 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-table/1.10.1/bootstrap-table.min.js"></script>
     <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/index.css') }}">
     <script src="{{ url_for('static', filename='js/particle-js.js') }}"></script>
+    <script type="text/javascript" src="https://unpkg.com/vis-network/standalone/umd/vis-network.min.js"></script>
     <script>
      particlesJS.load('particles-js', "{{ url_for('static', filename='js/particlesjs-config-2.json') }}");
     </script>
@@ -37,7 +38,7 @@
        <div class = "text-center page-header">
              Device List
        </div>
-
+       <div id="mynetwork"></div>
         <div class="container">
           <div align="right">
             <button class="btn btn-primary" id="button_refresh">Refresh</button>
@@ -80,7 +81,6 @@
           </div>
         </div>
         <div class="footer">  
-          
           <div class="footer-img">
           <a href="https://github.com/jaumecolomhernandez/autoconfig-openthread">
             <img alt="GitHub" src="{{ url_for('static', filename='img/github.svg') }}"
@@ -185,6 +185,28 @@
       $('#stop{{ d.id }}').bind("click", stopInterval{{ d.id }});
     </script>
     {% endfor %}
+
+    <script type="text/javascript">
+      // create an array with nodes
+      $.get( "api/topology_test", function( dict ) {
+        var nodes = []
+        var edges = []
+        for (var key in dict) {
+            nodes.push({id: key, label: "Node " + key})
+            for(i=0; i<dict[key].length; i++){
+              edges.push({from: key, to: dict[key][i]})
+            }
+        }
+        // create a network
+        var container = document.getElementById('mynetwork');
+        var data = {
+          nodes: nodes,
+          edges: edges
+        };
+        var options = {};
+        var network = new vis.Network(container, data, options);
+      });
+    </script> 
 
     </body>
 </html>
