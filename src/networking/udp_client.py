@@ -29,7 +29,7 @@ def send(command, flags=''):
 
 if __name__ == '__main__':
   sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
-  sock.connect((local, 12342))
+  sock.connect((remote, 12342))
   sock.sendall(bytes(mes, 'ascii'))
 
   server_thread = multiprocessing.Process(target = run)

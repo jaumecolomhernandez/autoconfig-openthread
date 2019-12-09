@@ -35,10 +35,10 @@ class UDPServer:
     
     def decode_msg(self, msg):
         args = msg.decode().split('|')
-        print(f"Decoded message -> Header: '{args[1]}' Payload: '{args[2]}'")
-        if len(args) < 4:
+        #print(f"Decoded message -> Header: '{args[1]}' Payload: '{args[2]}'")
+        if len(args) < 3:
             print("Bad formatted message")
-            return "E", "RROR"
+            return "E", args[0]
         return args[1], args[2]
         
     def send_message(self, message, addr, flags=''):
