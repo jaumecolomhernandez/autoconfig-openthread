@@ -171,7 +171,7 @@ class HTTPDevice(Device):
     def __repr__(self):
         return str(vars(self))
 
-    def send_command(self, command):
+    def send_command(self, command, flags=''):
         pass
 
     def read_answer(self):

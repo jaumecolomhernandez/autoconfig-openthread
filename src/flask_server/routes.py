@@ -25,8 +25,13 @@ def send_cmd():
 	#print(f"id {request.form['id']} : {request.form['command']}")
 	# TODO: Show some message in the UI confirming the sending of the message
 	# TODO: Show pseudoCLI to see the response
-	current_app.manager.get_device(id_number=int(request.form['id'])).send_command(request.form['command'])
-	logger.info(f"Sent message: '{request.form['command']}' to device with id: {request.form['id']}")
+	cmd = request.form['command'].split('|')
+	if len(cmd) > 1:
+		current_app.manager.get_device(id_number=int(request.form['id'])).send_command(cmd[0], flags=cmd[1])
+		logger.info(f"Sent message: '{cmd[0]}' and Flags : '{cmd[1]}' to device with id: {request.form['id']}")
+	else:
+		current_app.manager.get_device(id_number=int(request.form['id'])).send_command(cmd[0])
+		logger.info(f"Sent message: '{cmd[0]}' to device with id: {request.form['id']}")
 	return render_template('index.html', devices=current_app.manager.devices, user=current_user)
 
 
