@@ -34,10 +34,10 @@ def get_topology():
 def get_topology_test():
     """ RETURNS TOPOLOGY OF NETWORK
     """
-    topology = { 1 : [2,3],
-    2 : [2,3,4],
-    3 : [4],
-    4 : []
+    topology = { 1 : [],
+    2 : [1],
+    3 : [1],
+    4 : [1]
     }
     return topology
 
