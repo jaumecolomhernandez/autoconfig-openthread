@@ -192,7 +192,11 @@
         var nodes = []
         var edges = []
         for (var key in dict) {
-            nodes.push({id: key, label: "Node " + key})
+            if (key === "1"){
+              nodes.push({id: key, label: "Node " + key, color: "#FB7E81"})
+            } else {
+              nodes.push({id: key, label: "Node " + key})
+            }
             for(i=0; i<dict[key].length; i++){
               edges.push({from: key, to: dict[key][i]})
             }

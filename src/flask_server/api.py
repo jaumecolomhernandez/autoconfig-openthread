@@ -34,10 +34,15 @@ def get_topology():
 def get_topology_test():
     """ RETURNS TOPOLOGY OF NETWORK
     """
+<<<<<<< Updated upstream
     topology = { 1 : [],
     2 : [1],
     3 : [1],
     4 : [1]
+=======
+    topology = { 1 : [2],
+    2 : [],
+>>>>>>> Stashed changes
     }
     return topology
 
