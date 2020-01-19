@@ -195,6 +195,11 @@ class DeviceManager(object):
 
         # TODO: Implement live check
 
+        # V Auth handling
+        if message[0] == "VAUTH":
+            dev = self.add_UDPDevice(self.internal_server.server_socket, (message[1],'NONE'))
+            self.log.info(f"Added device to list ({message[1]},NONE)")
+
         # Add CMD to the history
         dev.msg_hist.append(' '.join(message))
         dev.msg_list_to_str()
