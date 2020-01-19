@@ -196,13 +196,13 @@ class DeviceManager(object):
         # TODO: Implement live check
         # V Auth handling
         if "VAUTH" in message[0]:
-            if not get_device(id_number=int([1])):
+            if not self.get_device(id_number=int([1])):
                 m = message[0].split('_')
                 dev = self.add_UDPDevice(self.internal_server.server_socket, address_tuple)
                 dev.id = int(m[1])
                 dev.connexion = True
                 self.log.info(f"Added device to list ({m[1]},{address_tuple[1]})")
-             
+
 
         # Add CMD to the history
         dev.msg_hist.append(' '.join(message))
