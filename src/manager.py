@@ -279,7 +279,7 @@ class DeviceManager(object):
         """ 
         #self.ID-> Afegir IDtest
         idn = len(self.devices)+1
-        dev = d.UDPDevice(idn, f"TCP{idn}", socket, addr)
+        dev = d.UDPDevice(idn, f"UDP{idn}", socket, addr)
         self.topology[idn] = []
         self.devices.append(dev)
         return dev
